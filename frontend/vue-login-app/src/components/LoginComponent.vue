@@ -1,5 +1,6 @@
 
 <template>
+<body>
   <div class="login-container">
     <h1>Login</h1>
     <form @submit.prevent="login">
@@ -18,9 +19,18 @@
       <p>{{ errorMessage }}</p>
     </div>
   </div>
+  </body>
 </template>
 
 <style scoped>
+* {
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  list-style: none;
+  box-sizing: border-box;
+  color:black;
+}
 
 .login-container {
   width: 400px;
@@ -71,11 +81,11 @@ input {
 }
 
 input:focus {
-  border-color:rgb(156, 65, 121);
+  border-color:#5a3d5c;
 }
 
 button {
-  background-color: rgb(126, 71, 105);
+  background-color: #5a3d5c;
   color: white;
   padding: 12px;
   border: none;
@@ -86,7 +96,7 @@ button {
 }
 
 button:hover {
-  background-color:rgb(62, 21, 52);
+  background-color:rgb(73, 55, 68);
 }
 
 .error-message {
