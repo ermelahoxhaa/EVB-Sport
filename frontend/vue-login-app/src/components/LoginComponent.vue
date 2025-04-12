@@ -1,124 +1,114 @@
 
 <template>
-<body>
-  <div class="login-container">
-    <h1>Login</h1>
-    <form @submit.prevent="login">
-      <div>
-        <label for="username">Përdoruesi:</label>
-        <input type="text" v-model="username" id="username" required />
-      </div>
-      <div>
-        <label for="password">Fjalëkalimi:</label>
-        <input type="password" v-model="password" id="password" required />
-      </div>
-      <button type="submit">Login</button>
-    </form>
+<body class="custom-body">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+      <div class="wrapper card shadow border-0 p-4">
+        <h1 class="text-center mb-4">Login</h1>
+        <form @submit.prevent="login">
+          <div class="input-box form-group mb-3">
+            <label for="username" class="form-label">Përdoruesi:</label>
+            <input
+              type="text"
+              v-model="username"
+              id="username"
+              class="form-control custom-input"
+              required
+            />
+          </div>
+          <div class="input-box form-group mb-3">
+            <label for="password" class="form-label">Fjalëkalimi:</label>
+            <input
+              type="password"
+              v-model="password"
+              id="password"
+              class="form-control custom-input"
+              required
+            />
+          </div>
+          <button type="submit" class="btn w-100 custom-btn">Login</button>
+        </form>
 
-    <div v-if="errorMessage" class="error-message">
-      <p>{{ errorMessage }}</p>
+        <div v-if="errorMessage" class="alert alert-danger mt-3 text-center">
+          <p class="mb-0">{{ errorMessage }}</p>
+        </div>
+      </div>
     </div>
-  </div>
   </body>
 </template>
 
-<style scoped>
-* {
-  padding: 0;
-  margin: 0;
-  text-decoration: none;
-  list-style: none;
-  box-sizing: border-box;
-  color:black;
-}
 
-.login-container {
-  width: 400px;
-  margin: 100px auto;
-  padding: 40px;
-  background-color: #2C2C2C;
+<style scoped>
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');
+
+.custom-body {
+  background-color:rgb(189, 217, 224);
+  font-family: 'Quicksand', sans-serif;
+}
+.wrapper {
+  background-color:rgb(43, 43, 43);
+  border-radius: 20px;
+  max-width: 400px;
+  width: 100%;
+}
+.custom-input {
+  background-color: white;
   border-radius: 10px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: 2px solid rgb(18, 109, 132);
+  transition: border-color 0.3s ease-in-out;
 }
 
 h1 {
   font-size: 2rem;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.8);
   margin-bottom: 30px;
-}
 
-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-div {
-  margin-bottom: 20px;
 }
 
 label {
-  font-size: 1rem;
-  color: #fff;
+  color: rgb(211, 236, 242);
+  font-weight: 500;
   margin-bottom: 5px;
-  font-weight: 600;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  font-size: 1rem;
-  border: 1px solid #555;
-  border-radius: 5px;
-  outline: none;
-  box-sizing: border-box;
-  background-color: #444;
-  color: #fff;
-  transition: border-color 0.3s ease-in-out;
+.custom-input:focus {
+  border-color: rgb(38, 146, 173);
+  box-shadow: none;
 }
 
-input:focus {
-  border-color:#5a3d5c;
-}
-
-button {
-  background-color: #5a3d5c;
+.custom-btn {
+  background-color: rgb(21, 71, 83);
   color: white;
-  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  height: 45px;
   border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
 }
 
-button:hover {
-  background-color:rgb(73, 55, 68);
+.custom-btn:hover {
+  background-color: rgb(89, 125, 133);
 }
-
-.error-message {
-  color: red;
-  text-align: center;
-  margin-top: 20px;
-}
-
 @media (max-width: 480px) {
-  .login-container {
-    width: 90%;
-    padding: 30px;
+  .wrapper {
+    padding: 20px;
   }
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 24px;
   }
 
-  input,
-  button {
-    font-size: 0.9rem;
-    padding: 10px;
+  .custom-input {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+
+  .custom-btn {
+    font-size: 14px;
+    height: 40px;
   }
 }
 </style>

@@ -3,7 +3,7 @@
     <router-link to="/" class="navbar-brand">
       <span class="logo">
         <span class="evb">EVB</span>
-        <span class="sport">Sport</span>
+        <img src="../assets/dumbbell.png" alt="dumbbell" class="dumbbell">
       </span>
     </router-link>
 
@@ -73,18 +73,16 @@ body {
   font-size: 45px;
   font-weight: bold;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
 }
-
 .evb {
-  display: block;
+  margin-right:10px;
 }
-
-.sport {
-  font-size: 25px;
-  margin-top: -20px;
-  text-align: right;
+.dumbbell {
+    margin-left:-11px;
+    margin-top: 20px;
+    width: 35px;
+    height: auto;
 }
 
 .navbar-nav .nav-link {
@@ -96,7 +94,7 @@ body {
 }
 
 .navbar-nav .nav-link.active, .navbar-nav .nav-link:hover {
-  color:rgb(163, 129, 165);
+  color:rgb(154, 155, 201);
 }
 
 @media (max-width: 820px) {
