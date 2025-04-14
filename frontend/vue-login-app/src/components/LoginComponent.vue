@@ -42,7 +42,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');
 
 .custom-body {
-  background-color:rgb(189, 217, 224);
+  background-color:rgb(216, 182, 223);
   font-family: 'Quicksand', sans-serif;
 }
 .wrapper {
@@ -56,7 +56,7 @@
   border-radius: 10px;
   padding: 12px 20px;
   font-size: 16px;
-  border: 2px solid rgb(18, 109, 132);
+  border: 2px solid rgb(23, 6, 27);
   transition: border-color 0.3s ease-in-out;
 }
 
@@ -68,18 +68,18 @@ h1 {
 }
 
 label {
-  color: rgb(211, 236, 242);
+  color: rgb(238, 222, 241);
   font-weight: 500;
   margin-bottom: 5px;
 }
 
 .custom-input:focus {
-  border-color: rgb(38, 146, 173);
+  border-color: rgb(237, 159, 252);
   box-shadow: none;
 }
 
 .custom-btn {
-  background-color: rgb(21, 71, 83);
+  background-color: rgb(94, 64, 100);
   color: white;
   border-radius: 10px;
   font-weight: 600;
@@ -90,7 +90,7 @@ label {
 }
 
 .custom-btn:hover {
-  background-color: rgb(89, 125, 133);
+  background-color: rgb(153, 111, 160);
 }
 @media (max-width: 480px) {
   .wrapper {

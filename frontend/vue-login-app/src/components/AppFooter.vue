@@ -99,7 +99,7 @@
 }
 
 .footer-col ul li a:hover {
-  color: rgb(75, 173, 243);
+  color: rgb(186, 11, 221);
 }
 
 .footer-col .social-links a {

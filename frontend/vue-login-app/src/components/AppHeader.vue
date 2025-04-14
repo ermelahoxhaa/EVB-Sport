@@ -64,14 +64,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 8px 28px;
   border-bottom: 1px solid black;
 }
 
 .logo {
   font-family: 'Dancing Script', cursive;
-  font-size: 45px;
-  font-weight: bold;
+  font-size: 40px;
   display: flex;
   align-items: center;
 }
@@ -79,9 +78,9 @@ body {
   margin-right:10px;
 }
 .dumbbell {
-    margin-left:-11px;
-    margin-top: 20px;
-    width: 35px;
+    margin-left:-23px;
+    margin-top: 35px;
+    width: 25px;
     height: auto;
 }
 
@@ -94,7 +93,7 @@ body {
 }
 
 .navbar-nav .nav-link.active, .navbar-nav .nav-link:hover {
-  color:rgb(154, 155, 201);
+  color:rgb(211, 77, 238);
 }
 
 @media (max-width: 820px) {

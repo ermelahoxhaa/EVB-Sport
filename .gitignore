@@ -1,0 +1,25 @@
+# Node dependencies
+node_modules/
+
+# Dist/Build folders
+dist/
+build/
+
+# Logs
+*.log
+
+# Temporary/cache
+*.tmp
+.cache/
+.vite/
+
+# IDE/editor
+.vscode/
+.idea/
+*.sublime-*
+
+# HTML files që s’duhen
+html/
+
+# Env files
+.env
