@@ -6,26 +6,33 @@
         <h1 class="text-center mb-4">Login</h1>
         <form @submit.prevent="login">
           <div class="input-box form-group mb-3">
-            <label for="username" class="form-label">Përdoruesi:</label>
             <input
-              type="text"
-              v-model="username"
-              id="username"
+              type="email"
+              v-model="email"
+              id="email"
               class="form-control custom-input"
+              placeholder="Email"
               required
             />
           </div>
           <div class="input-box form-group mb-3">
-            <label for="password" class="form-label">Fjalëkalimi:</label>
             <input
               type="password"
               v-model="password"
               id="password"
               class="form-control custom-input"
+              placeholder="Password"
               required
             />
           </div>
           <button type="submit" class="btn w-100 custom-btn">Login</button>
+          <div class="text-center mt-3">
+            <span style="color: rgba(255, 255, 255, 0.8);">Don't have an account? </span>
+            <a href="/SignUp.vue" class="text-decoration-none" style="color: rgb(237, 159, 252); font-weight: 600;">
+              Register here
+            </a>
+        </div>
+
         </form>
 
         <div v-if="errorMessage" class="alert alert-danger mt-3 text-center">
