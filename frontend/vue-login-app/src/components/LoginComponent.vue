@@ -28,9 +28,9 @@
           <button type="submit" class="btn w-100 custom-btn">Login</button>
           <div class="text-center mt-3">
             <span style="color: rgba(255, 255, 255, 0.8);">Don't have an account? </span>
-            <a href="/SignUp.vue" class="text-decoration-none" style="color: rgb(237, 159, 252); font-weight: 600;">
+            <router-link to="/signup" class="text-decoration-none" style="color: rgb(237, 159, 252); font-weight: 600;">
               Register here
-            </a>
+            </router-link>
         </div>
 
         </form>
