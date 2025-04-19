@@ -1,6 +1,6 @@
 
 <template>
-<body class="custom-body">
+<div class="custom-body">
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
       <div class="wrapper card shadow border-0 p-4">
         <h1 class="text-center mb-4">Login</h1>
@@ -40,8 +40,42 @@
         </div>
       </div>
     </div>
-  </body>
+  </div>
 </template>
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      email: '',
+      password: '',
+      errorMessage: ''
+    };
+  },
+  methods: {
+    async handleLogin() {
+      try {
+        const response = await axios.post('http://localhost:3000/api/auth/login', {
+          email: this.email,
+          password: this.password
+        });
+
+        
+        alert(response.data.message);
+
+        localStorage.setItem('token', response.data.token);
+
+        this.$router.push('/dashboard');
+      } catch (error) {
+        this.errorMessage = error.response?.data?.message || 'Gabim në server!';
+        alert(this.errorMessage);
+      }
+    }
+  }
+};
+</script>
+
 
 
 <style scoped>
