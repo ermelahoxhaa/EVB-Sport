@@ -86,20 +86,23 @@ const errorMessage = ref('');
 
 const signup = async () => {
   if (password.value !== confirmPassword.value) {
-    errorMessage.value = 'Fjalëkalimet nuk përputhen!';
+    errorMessage.value = 'Passwords do not match!';
     return;
   }
 
   try {
-    const res = await axios.post('http://localhost:5000/register', {
+    const res = await axios.post('http://localhost:3000/api/auth/signup', {
       email: email.value,
       password: password.value,
     });
 
     console.log(res.data);
+
+    alert('Registration was successful!');
+    window.location.href = '/login'; 
     
   } catch (err) {
-    errorMessage.value = err.response?.data?.message || 'Ka ndodhur një gabim gjatë regjistrimit.';
+    errorMessage.value = err.response?.data?.message || 'Error during registration!';
   }
 };
 </script>

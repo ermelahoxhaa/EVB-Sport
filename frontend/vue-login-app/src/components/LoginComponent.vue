@@ -4,7 +4,7 @@
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
       <div class="wrapper card shadow border-0 p-4">
         <h1 class="text-center mb-4">Login</h1>
-        <form @submit.prevent="login">
+        <form @submit.prevent="handleLogin">
           <div class="input-box form-group mb-3">
             <input
               type="email"
@@ -56,7 +56,9 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        const response = await axios.post('http://localhost:3000/api/auth/login', {
+        console.log('I am trying to connect with:', this.email);
+        const response = await axios.post('http://localhost:3000/login'
+, {
           email: this.email,
           password: this.password
         });
@@ -68,7 +70,7 @@ export default {
 
         this.$router.push('/dashboard');
       } catch (error) {
-        this.errorMessage = error.response?.data?.message || 'Gabim në server!';
+        this.errorMessage = error.response?.data?.message || 'Server error!';
         alert(this.errorMessage);
       }
     }
