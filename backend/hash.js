@@ -1,5 +1,6 @@
 
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
 
 const password = '1234';
 

@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import axios from 'axios';
+import axios from '../axios';
 
 export default {
   data() {
@@ -57,7 +57,7 @@ export default {
     async handleLogin() {
       try {
         console.log('I am trying to connect with:', this.email);
-        const response = await axios.post('http://localhost:3000/login'
+        const response = await axios.post('http://localhost:3000/api/auth/login'
 , {
           email: this.email,
           password: this.password

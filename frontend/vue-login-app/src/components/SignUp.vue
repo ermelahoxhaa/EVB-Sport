@@ -77,12 +77,15 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
+import axios from '../axios';
 
 const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 const errorMessage = ref('');
+const firstName = ref('');
+const lastName = ref('');
+
 
 const signup = async () => {
   if (password.value !== confirmPassword.value) {
@@ -90,10 +93,13 @@ const signup = async () => {
     return;
   }
 
+  const fullName = `${firstName.value} ${lastName.value}`;
+
   try {
     const res = await axios.post('http://localhost:3000/api/auth/signup', {
       email: email.value,
       password: password.value,
+      name: fullName, 
     });
 
     console.log(res.data);

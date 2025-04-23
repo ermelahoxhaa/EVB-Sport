@@ -7,17 +7,10 @@
       </span>
     </router-link>
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <input type="checkbox" id="checkbox" class="d-none">
+    <label for="checkbox" class="navbar-toggler">
       <span class="navbar-toggler-icon"></span>
-    </button>
+    </label>
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
@@ -25,10 +18,10 @@
           <router-link to="/" class="nav-link">Home</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/makeup" class="nav-link">Products</router-link>
+          <router-link to="/about" class="nav-link">About Us</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/about" class="nav-link">About Us</router-link>
+          <router-link to="/products" class="nav-link">Products</router-link>
         </li>
         <li class="nav-item">
           <router-link to="/login" class="nav-link active">LogIn</router-link>
@@ -83,17 +76,17 @@ body {
     width: 25px;
     height: auto;
 }
-
 .navbar-nav .nav-link {
-  color: black;
-  font-size: 17px;
+  color: rgb(5, 2, 5);
+  font-size: 18px;
   border-radius: 4px;
-  padding: 7px 13px;
+  padding: 10px 13px;
   transition: background-color 0.3s;
+  margin-right: 50px;
 }
 
 .navbar-nav .nav-link.active, .navbar-nav .nav-link:hover {
-  color:rgb(211, 77, 238);
+  color:rgb(158, 105, 168);
 }
 
 @media (max-width: 820px) {
@@ -111,7 +104,7 @@ body {
   }
 
   .navbar-nav .nav-item {
-    margin: 15px 0;
+    margin: 20px 0;
   }
 
   .navbar-toggler {
@@ -124,7 +117,8 @@ body {
   }
 
   .navbar-nav .nav-link {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    margin: 25px 0;
   }
 
   #checkbox:checked ~ .navbar-collapse {
