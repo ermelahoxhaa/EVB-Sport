@@ -1,10 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginComponent from '../components/LoginComponent.vue'
 import SignUp from '../components/SignUp.vue'
+import DashboardView from '../components/DashboardView.vue';
+
 
 const routes = [
   { path: '/login', name: 'Login', component: LoginComponent },
-  { path: '/signup', name: 'Signup', component: SignUp }
+  { path: '/signup', name: 'Signup', component: SignUp },
+  { path: '/dashboard', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } }
+
 ]
 
 const router = createRouter({
