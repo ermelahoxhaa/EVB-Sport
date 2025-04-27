@@ -7,6 +7,9 @@ import DashboardView from '../components/DashboardView.vue';
 const routes = [
   { path: '/login', name: 'Login', component: LoginComponent },
   { path: '/signup', name: 'Signup', component: SignUp },
+ // { path: '/products', name: 'Products', component: ProductList },
+ // { path: '/home', name: 'home', component: ProductList },
+ 
   { path: '/dashboard', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } }
 
 ]

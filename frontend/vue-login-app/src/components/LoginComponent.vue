@@ -68,7 +68,7 @@ export default {
 
         localStorage.setItem('token', response.data.token);
 
-        this.$router.push('/dashboard');
+        this.$router.push('/products');
       } catch (error) {
         this.errorMessage = error.response?.data?.message || 'Server error!';
         alert(this.errorMessage);

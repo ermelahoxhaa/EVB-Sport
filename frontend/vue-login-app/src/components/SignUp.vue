@@ -1,5 +1,5 @@
 <template>
-    <body class="custom-body">
+    <div class="custom-body">
       <div class="container d-flex justify-content-center align-items-center min-vh-100">
         <div class="wrapper card shadow border-0 p-4">
           <h1 class="text-center mb-4">Sign Up</h1>
@@ -70,7 +70,7 @@
           </div>
         </div>
       </div>
-    </body>
+    </div>
   </template>
   
   
