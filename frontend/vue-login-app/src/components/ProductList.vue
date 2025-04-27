@@ -79,7 +79,7 @@ const filteredProducts = computed(() => {
 })
 
 function search() {
-  // Optionally handle something on click, not required for computed
+
 }
 </script>
 
@@ -123,7 +123,7 @@ function search() {
 .product-item {
   background-color: white;
   border: 1px solid #ddd;
-  padding: 20px;
+  padding: 15px;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
@@ -133,7 +133,8 @@ function search() {
 
 .product-item img {
   width: 100%;
-  height: auto;
+  height: 220px;
+  object-fit: cover;
   border-radius: 8px;
   margin-bottom: 10px;
 }
