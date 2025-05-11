@@ -65,7 +65,7 @@
   const editingId = ref(null)
   
   const fetchProducts = async () => {
-    const res = await axios.get(`${backendUrl}/api/products`)
+    const res = await axios.get(`${backendUrl}/api/productRoutes`)
     products.value = res.data
   }
   
