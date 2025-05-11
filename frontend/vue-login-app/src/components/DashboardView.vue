@@ -11,7 +11,7 @@
           <a class="nav-link text-white" href="#"><i class="fas fa-comment-dots me-2"></i>Manage Messages</a>
         </li>
         <li class="nav-item mb-2">
-          <a class="nav-link text-white" href="#"><i class="fas fa-box-open me-2"></i>Products</a>
+          <a class="nav-link text-white" href="ManageProducts.vue"><i class="fas fa-box-open me-2"></i>Products</a>
         </li>
         <li class="nav-item mb-2">
           <a class="nav-link text-white" href="#"><i class="fas fa-users me-2"></i>Users</a>

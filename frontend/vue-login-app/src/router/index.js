@@ -3,6 +3,7 @@ import LoginComponent from '../components/LoginComponent.vue'
 import SignUp from '../components/SignUp.vue'
 import DashboardView from '../components/DashboardView.vue';
 import ProductList from '../components/ProductList.vue';
+import ManageProducts from '../components/ManageProducts.vue';
 
 
 const routes = [
@@ -11,7 +12,8 @@ const routes = [
   { path: '/products', name: 'Products', component: ProductList },
   { path: '/', name: 'home'  },
   { path: '/about', name: 'about'  },
-  { path: '/dashboard', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } }
+  { path: '/dashboard', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } },
+  { path: '/manageproducts', name: 'ManageP', component: ManageProducts }
 
 ]
 
