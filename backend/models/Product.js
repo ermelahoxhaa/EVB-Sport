@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../config/dbConfig');
 
 class Product {
   constructor(id, name, price, image, brand) {
