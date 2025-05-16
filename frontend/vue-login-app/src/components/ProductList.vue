@@ -20,7 +20,7 @@
         <div v-for="product in filteredProducts" :key="product.id" class="product-item">
           <img :src="product.image" :alt="product.name" />
           <h3>{{ product.name }}</h3>
-          <p class="price">{{ product.price }}</p>
+          <p class="price">{{ product.price }}€</p>
           <button class="btn">Add to cart</button>
         </div>
       </div>
@@ -30,45 +30,27 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-
-import nikeHoodie from '@/assets/nike-hoodie.jpg'
-import adidasShorts from '@/assets/adidas-shorts.jpg'
-import pumaTShirt from '@/assets/puma-t-shirt.jpg'
-import underArmourTankTop from '@/assets/under-armour-tank-top.jpg'
-import reebokSneakers from '@/assets/reebok-sneakers.jpg'
-import nikeAirMax270 from '@/assets/nike-air-max-270.jpg'
-import adidasUltraboost22 from '@/assets/adidas-ultraboost-22.jpg'
-import pumaCaliStar from '@/assets/puma-cali-star.jpg'
-import uaFavoriteHat from '@/assets/ua-favorite-hat.jpg'
-import reebokLuxJogger from '@/assets/reebok-lux-jogger.jpg'
-import lululemonAlignPant from '@/assets/lululemon-align-pant.jpg'
-import lululemonEnergyBra from '@/assets/lululemon-energy-bra.jpg'
-import gymsharkVitalLeggings from '@/assets/gymshark-vital-leggings.jpg'
-import aloYogaAirliftLegging from '@/assets/alo-yoga-airlift-legging.jpg'
-import tyrMaxfitSwimsuit from '@/assets/tyr-maxfit-swimsuit.jpg'
+import { ref, computed, onMounted } from 'vue'
 
 const searchQuery = ref('')
 const selectedBrand = ref('')
-const brands = ['Nike', 'Adidas', 'Puma', 'Under Armour', 'Reebok', 'Lululemon', 'Gymshark', 'Alo','TYR']
+const brands = ref([])  
 
-const products = ref([
-  { id: 1, name: 'Nike Hoodie', brand: 'Nike', price: '€60', image: nikeHoodie  },
-  { id: 2, name: 'Adidas Shorts', brand: 'Adidas', price: '€40', image: adidasShorts },
-  { id: 3, name: 'Puma T-Shirt', brand: 'Puma', price: '€30', image: pumaTShirt },
-  { id: 4, name: 'Under Armour Tank Top', brand: 'Under Armour', price: '€35', image: underArmourTankTop },
-  { id: 5, name: 'Reebok Sneakers', brand: 'Reebok', price: '€85', image: reebokSneakers },
-  { id: 6, name: 'Nike Air Max 270', brand: 'Nike', price: '€120', image: nikeAirMax270 },
-  { id: 7, name: 'Adidas Ultraboost 22', brand: 'Adidas', price: '€140', image: adidasUltraboost22 },
-  { id: 8, name: 'Puma Cali Star', brand: 'Puma', price: '€90', image: pumaCaliStar  },
-  { id: 9, name: 'Under Armour Favorite Hat', brand: 'Under Armour', price: '€20', image: uaFavoriteHat },
-  { id: 10, name: 'Reebok Lux Jogger Pants', brand: 'Reebok', price: '€65', image: reebokLuxJogger },
-  { id: 11, name: 'Lululemon Align High-Rise Pant', brand: 'Lululemon', price: '€98', image: lululemonAlignPant },
-  { id: 12, name: 'Lululemon Energy Bra', brand: 'Lululemon', price: '€48', image: lululemonEnergyBra },
-  { id: 13, name: 'Gymshark Vital Seamless Leggings', brand: 'Gymshark', price: '€55', image: gymsharkVitalLeggings },
-  { id: 14, name: 'Alo Yoga High-Waist Airlift Legging', brand: 'Alo Yoga', price: '€110', image: aloYogaAirliftLegging },
-  { id: 15, name: 'TYR Durafast Elite Maxfit Swimsuit', brand: 'TYR', price: '€75', image: tyrMaxfitSwimsuit },
-])
+const products = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await fetch('http://localhost:3000/api')
+    const data = await res.json()
+    products.value = data
+
+    
+    brands.value = [...new Set(data.map(p => p.brand))].sort()
+
+  } catch (error) {
+    console.error('Gabim gjatë marrjes së produkteve:', error)
+  }
+})
 
 const filteredProducts = computed(() => {
   return products.value.filter(p => {
@@ -77,10 +59,6 @@ const filteredProducts = computed(() => {
     return matchesBrand && matchesQuery
   })
 })
-
-function search() {
-
-}
 </script>
 
 <style scoped>
