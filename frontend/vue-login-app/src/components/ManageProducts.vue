@@ -1,38 +1,85 @@
 <template>
   <div class="container py-4">
     <h2 class="mb-4">Manage Products</h2>
-    
-  
-    <form @submit.prevent="submitForm" class="mb-5">
+
+    <form @submit.prevent="submitForm" class="mb-5" enctype="multipart/form-data">
       <div class="mb-3">
-        <input v-model="form.name" type="text" class="form-control" placeholder="Product Name" required />
+        <input
+          v-model="form.name"
+          type="text"
+          class="form-control"
+          placeholder="Product Name"
+          required
+        />
       </div>
       <div class="mb-3">
-        <input v-model.number="form.price" type="number" class="form-control" placeholder="Price" required />
+        <input
+          v-model.number="form.price"
+          type="number"
+          step="0.01"
+          class="form-control"
+          placeholder="Price"
+          required
+        />
       </div>
       <div class="mb-3">
-        <input v-model="form.brand" type="text" class="form-control" placeholder="Brand" required />
+        <input
+          v-model="form.brand"
+          type="text"
+          class="form-control"
+          placeholder="Brand"
+        />
       </div>
       <div class="mb-3">
         <input type="file" class="form-control" @change="onFileChange" />
       </div>
-      <button type="submit" class="btn btn-primary" :style="{ backgroundColor: '#6f42c1' }">{{ editingId ? 'Update' : 'Add' }} Product</button>
-      <button v-if="editingId" type="button" class="btn btn-secondary ms-2" @click="resetForm">Cancel</button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        :style="{ backgroundColor: 'rgb(128, 97, 114)' }"
+      >
+        {{ editingId ? 'Update' : 'Add' }} Product
+      </button>
+      <button
+        v-if="editingId"
+        type="button"
+        class="btn btn-secondary ms-2"
+        @click="resetForm"
+      >
+        Cancel
+      </button>
     </form>
 
-   
     <div v-if="products.length" class="row g-3 mb-5">
       <div class="col-md-4" v-for="product in products" :key="product.id">
         <div class="card h-100">
-          <img :src="`/uploads/${product.image}`" class="card-img-top" alt="Product Image" />
+          <img
+            :src="product.image"
+            class="card-img-top"
+            alt="Product Image"
+            style="height: 200px; object-fit: contain;"
+          />
           <div class="card-body">
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text">{{ product.brand }} - ${{ product.price }}</p>
-            <button class="btn btn-primary" @click="editProduct(product)">Edit</button>
-            <button class="btn btn-danger" @click="deleteProduct(product.id)">Delete</button>
+            <button class="btn btn-primary" @click="editProduct(product)"
+            style="background-color: rgb(128, 97, 114); border-color: rgb(100, 75, 90);">
+              Edit
+            </button>
+            <button
+              class="btn btn-danger"
+              @click="deleteProduct(product.id)"
+              style="background-color:rgb(193, 107, 104); margin-left: 5px;"
+            >
+              Delete
+            </button>
           </div>
         </div>
       </div>
+    </div>
+
+    <div v-else>
+      <p>No products found.</p>
     </div>
   </div>
 </template>
@@ -41,11 +88,18 @@
 import axios from "axios";
 
 export default {
+  name: "ManageProducts",
   data() {
     return {
       products: [],
-      form: { name: "", price: "", brand: "", image: null },
+      form: {
+        name: "",
+        price: null,
+        brand: "",
+        image: null, 
+      },
       editingId: null,
+      existingImage: null, 
     };
   },
   created() {
@@ -54,19 +108,32 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get("http://localhost:3000/api/products");
+        const response = await axios.get("http://localhost:3000/api");
         this.products = response.data;
       } catch (error) {
-        console.error("There was an error fetching the products:", error);
+        console.error("Error fetching products:", error);
+      }
+    },
+    onFileChange(event) {
+      if (event.target.files.length) {
+        this.form.image = event.target.files[0];
+      } else {
+        this.form.image = null;
       }
     },
     editProduct(product) {
-      this.form = { ...product };
       this.editingId = product.id;
+      this.form.name = product.name;
+      this.form.price = product.price;
+      this.form.brand = product.brand;
+      this.existingImage = product.image.replace("/uploads/", ""); 
+      this.form.image = null; 
     },
     resetForm() {
-      this.form = { name: "", price: "", brand: "", image: null };
       this.editingId = null;
+      this.existingImage = null;
+      this.form = { name: "", price: null, brand: "", image: null };
+      this.$refs.fileInput.value = null; 
     },
     async submitForm() {
       try {
@@ -74,38 +141,45 @@ export default {
         formData.append("name", this.form.name);
         formData.append("price", this.form.price);
         formData.append("brand", this.form.brand);
-        if (this.form.image) formData.append("image", this.form.image);
-
-        if (this.editingId) {
-          await axios.put(`http://localhost:3000/api/products/${this.editingId}`, formData);
-    } else {
-      await axios.post("http://localhost:3000/api/products", formData);
+        if (this.form.image) {
+          formData.append("image", this.form.image);
         }
-
+        
+        if (this.editingId) {
+          formData.append("existingImage", this.existingImage);
+          await axios.put(
+            `http://localhost:3000/api/${this.editingId}`,
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
+        } else {
+          await axios.post("http://localhost:3000/api", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+        }
         this.resetForm();
-        this.fetchProducts(); 
+        this.fetchProducts();
       } catch (error) {
         console.error("Error submitting form:", error);
       }
     },
-    onFileChange(event) {
-      this.form.image = event.target.files[0];
-    },
     async deleteProduct(id) {
+      if (!confirm("Are you sure you want to delete this product?")) return;
       try {
-        await axios.delete(`http://localhost:3000/api/products/${id}`);
-        this.fetchProducts(); 
+        await axios.delete(`http://localhost:3000/api${id}`);
+        this.fetchProducts();
       } catch (error) {
         console.error("Error deleting product:", error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
-  
-  <style scoped>
-  .card {
-    border-radius: 12px;
-  }
-  </style>
-  
+
+<style scoped>
+.card {
+  border-radius: 12px;
+}
+</style>

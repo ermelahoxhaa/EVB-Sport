@@ -68,7 +68,7 @@ app.get('/api', (req, res) => {
   });
 });
 app.get('/api/products', (req, res) => {
-  console.log('Request për /api/products ka mbërritur!'); // shto këtë rresht
+  console.log('Request për /api/products ka mbërritur!'); 
 
   const query = 'SELECT * FROM products';
 
