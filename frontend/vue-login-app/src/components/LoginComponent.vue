@@ -64,12 +64,20 @@ export default {
         });
 
         
-        alert(response.data.message);
+        const token = response.data.token;
+        const userRole = response.data.role;
 
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', token);
+        localStorage.setItem('role', userRole);
 
-        this.$router.push('/products');
-      } catch (error) {
+        if (userRole === 'admin') {
+          this.$router.push('/dashboard'); 
+        } else {
+          this.errorMessage = 'You do not have rights to log in as admin.';
+          localStorage.removeItem('token');
+          localStorage.removeItem('role');
+        }
+      }  catch (error) {
         this.errorMessage = error.response?.data?.message || 'Server error!';
         alert(this.errorMessage);
       }

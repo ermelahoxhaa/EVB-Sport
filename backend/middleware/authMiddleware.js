@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'sekret_i_sigurt';
-
+const ROLES = require('../config/roles');
 class AuthMiddleware {
   static authenticateToken(req, res, next) {
     const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -18,6 +18,15 @@ class AuthMiddleware {
       next();
     });
   }
+  static authorizeRole(role) {
+  return (req, res, next) => {
+    if (req.user.role !== role) {
+      return res.status(403).json({ success: false, message: 'Access denied: insufficient privileges.' });
+    }
+    next();
+  };
+}
+
 }
 
 module.exports = AuthMiddleware;

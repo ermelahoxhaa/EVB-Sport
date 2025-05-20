@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/dbconfig');
 const SECRET_KEY = 'sekret_i_sigurt'; 
-
+const ROLES = require('../config/roles');
 class AuthController {
   static async login(req, res) {
     const { email, password } = req.body;
@@ -25,7 +25,7 @@ class AuthController {
         }
 
         const token = jwt.sign(
-          { email: user.email, id: user.id },
+          { email: user.email, id: user.id, role: user.role },
           SECRET_KEY,
           { expiresIn: '1h' }
         );
@@ -34,6 +34,7 @@ class AuthController {
           success: true,
           message: 'Successful login!',
           token,
+          role: user.role
         });
       });
     } catch (err) {
@@ -42,9 +43,9 @@ class AuthController {
   }
 
   static async signup(req, res) {
-    const { email, password, name } = req.body;
+    const { email, password, name, role = ROLES.USER } = req.body;
 
-    // Kontrollo që të dhënat janë të plota
+    
     if (!email || !password || !name) {
       return res.status(400).json({ success: false, message: 'All fields are required!' });
     }
@@ -52,8 +53,8 @@ class AuthController {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const query = 'INSERT INTO users (email, password, name) VALUES (?, ?, ?)';
-      db.execute(query, [email, hashedPassword, name], (err, result) => {
+      const query = 'INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)';
+      db.execute(query, [email, hashedPassword, name, role], (err, result) => {
         if (err) {
           return res.status(500).json({ success: false, message: 'Database error' });
         }
