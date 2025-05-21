@@ -43,7 +43,7 @@ class AuthController {
   }
 
   static async signup(req, res) {
-    const { email, password, name, role = ROLES.USER } = req.body;
+    const { email, password, name } = req.body;
 
     
     if (!email || !password || !name) {
@@ -54,7 +54,7 @@ class AuthController {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const query = 'INSERT INTO users (email, password, name, role) VALUES (?, ?, ?, ?)';
-      db.execute(query, [email, hashedPassword, name, role], (err, result) => {
+      db.execute(query, [email, hashedPassword, name, 'user'], (err, result) => {
         if (err) {
           return res.status(500).json({ success: false, message: 'Database error' });
         }

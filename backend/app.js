@@ -89,6 +89,9 @@ app.get('/sekret', verifyToken, (req, res) => {
   res.json({ message: `Përshëndetje ${req.user.username}, ky është një mesazh sekret 🔐` });
 });
 
+const userRoutes = require('./routes/userRoutes'); 
+app.use('/api/users', userRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Serveri është duke funksionuar në http://localhost:${PORT}`);

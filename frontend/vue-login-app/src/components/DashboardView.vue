@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex flex-column flex-md-row min-vh-100">
-    <!-- Sidebar -->
+    
     <div class="bg-custom sidebar p-3 text-white" style="width: 250px;">
       <h4 class="text-center mb-4">SportWear Admin</h4>
       <ul class="nav flex-column">
@@ -11,24 +11,26 @@
           <a class="nav-link text-white" href="#"><i class="fas fa-comment-dots me-2"></i>Manage Messages</a>
         </li>
         <li class="nav-item mb-2">
-    <router-link to="/manageproducts" class="nav-link text-white">
-      <i class="fas fa-box-open me-2"></i>Products
-    </router-link>
-  </li>
+        <router-link to="/manageproducts" class="nav-link text-white">
+        <i class="fas fa-box-open me-2"></i>Products
+      </router-link>
+       </li>
         <li class="nav-item mb-2">
-          <a class="nav-link text-white" href="#"><i class="fas fa-users me-2"></i>Users</a>
-        </li>
+   <router-link to="/manageadmin" class="nav-link text-white">
+  <i class="fas fa-box-open me-2"></i>Users
+</router-link>
+  </li>
         <li class="nav-item mt-4">
           <a class="nav-link text-white" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
         </li>
       </ul>
     </div>
 
-    <!-- Content -->
+    
     <div class="flex-fill p-4 bg-light">
       <h2 class="mb-4">Welcome to the Admin Dashboard</h2>
 
-      <!-- Stats Cards -->
+      
       <div class="row mb-4">
         <div
           class="col-12 col-sm-6 col-md-4 mb-3"
@@ -45,7 +47,7 @@
         </div>
       </div>
 
-      <!-- Chart -->
+      
       <div class="card shadow-sm p-3">
         <h5 class="card-title">Weekly Activity</h5>
         <canvas id="activityChart" height="200"></canvas>
@@ -97,7 +99,7 @@ canvas {
   height: 300px !important;
 }
 
-/* Ruaj strukturën anë-majë edhe në ekran të vogël */
+
 .sidebar {
   width: 250px;
   min-width: 250px;

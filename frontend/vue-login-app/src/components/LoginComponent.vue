@@ -70,7 +70,7 @@ export default {
         localStorage.setItem('token', token);
         localStorage.setItem('role', userRole);
 
-        if (userRole === 'admin') {
+        if (userRole === 'user') {
           this.$router.push('/dashboard'); 
         } else {
           this.errorMessage = 'You do not have rights to log in as admin.';

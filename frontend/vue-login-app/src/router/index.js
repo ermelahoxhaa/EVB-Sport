@@ -4,6 +4,8 @@ import SignUp from '../components/SignUp.vue'
 import DashboardView from '../components/DashboardView.vue';
 import ProductList from '../components/ProductList.vue';
 import ManageProducts from '../components/ManageProducts.vue';
+import CreateAdmin from '../components/CreateAdmin.vue';
+
 
 
 const routes = [
@@ -13,7 +15,8 @@ const routes = [
   { path: '/', name: 'home'  },
   { path: '/about', name: 'about'  },
   { path: '/dashboard', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } },
-  { path: '/manageproducts', name: 'ManageP', component: ManageProducts }
+  { path: '/manageproducts', name: 'ManageP', component: ManageProducts },
+  { path: '/manageadmin', name: 'ManageA', component: CreateAdmin }
 
 ]
 
