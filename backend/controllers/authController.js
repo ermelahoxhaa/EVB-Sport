@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../config/dbconfig');
+const db = require('../config/dbConfig'); 
 const SECRET_KEY = 'sekret_i_sigurt'; 
 const ROLES = require('../config/roles');
 class AuthController {
@@ -14,10 +14,11 @@ class AuthController {
           return res.status(500).json({ success: false, message: 'Database error' });
         }
 
-        const user = result[0];
-        if (!user) {
+       
+        if (results.length === 0) {
           return res.status(401).json({ success: false, message: 'Wrong email or password!' });
         }
+         const user = result[0];
 
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {

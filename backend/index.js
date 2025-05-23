@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/productRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 
 const app = express();
@@ -12,8 +13,10 @@ app.use(bodyParser.json());
 
 app.use('/uploads', express.static('uploads'));
 
-app.use('/api/auth', authRoutes);
-app.use('/api', productRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/auth/login', auth);
+app.use('/api/products', productRoutes);
+
 
 const PORT = process.env.PORT || 3000;
 

@@ -1,11 +1,17 @@
 const fs = require('fs');
 const path = require('path');
-
+const db = require('../config/dbConfig'); 
 let products = [];
 
 exports.getAllProducts = (req, res) => {
-  res.json(products);
-};
+  db.query('SELECT * FROM products', (err, results) => {
+    if (err) {
+      console.error('Error fetching products:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results);
+  });
+}
 
 exports.createProduct = (req, res) => {
   const { name, price, brand } = req.body;

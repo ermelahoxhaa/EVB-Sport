@@ -108,7 +108,7 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get("http://localhost:3000/api");
+        const response = await axios.get("http://localhost:3000/api/products");
         this.products = response.data;
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -148,14 +148,14 @@ export default {
         if (this.editingId) {
           formData.append("existingImage", this.existingImage);
           await axios.put(
-            `http://localhost:3000/api/${this.editingId}`,
+            `http://localhost:3000/api/products/${this.editingId}`,
             formData,
             {
               headers: { "Content-Type": "multipart/form-data" },
             }
           );
         } else {
-          await axios.post("http://localhost:3000/api", formData, {
+          await axios.post("http://localhost:3000/api/products", formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
         }
@@ -168,7 +168,7 @@ export default {
     async deleteProduct(id) {
       if (!confirm("Are you sure you want to delete this product?")) return;
       try {
-        await axios.delete(`http://localhost:3000/api${id}`);
+        await axios.delete(`http://localhost:3000/api/products${id}`);
         this.fetchProducts();
       } catch (error) {
         console.error("Error deleting product:", error);

@@ -40,7 +40,7 @@ const products = ref([])
 
 onMounted(async () => {
   try {
-    const res = await fetch('http://localhost:3000/api')
+    const res = await fetch('http://localhost:3000/api/products')
     const data = await res.json()
     products.value = data
 
