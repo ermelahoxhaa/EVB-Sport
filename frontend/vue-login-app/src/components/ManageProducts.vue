@@ -31,7 +31,7 @@
         />
       </div>
       <div class="mb-3">
-        <input type="file" class="form-control" @change="onFileChange" />
+        <input ref="fileInput" type="file" class="form-control" @change="onFileChange" />
       </div>
       <button
         type="submit"
@@ -106,75 +106,82 @@ export default {
     this.fetchProducts();
   },
   methods: {
-    async fetchProducts() {
-      try {
-        const response = await axios.get("http://localhost:3000/api/products");
-        this.products = response.data;
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    },
-    onFileChange(event) {
-      if (event.target.files.length) {
-        this.form.image = event.target.files[0];
-      } else {
-        this.form.image = null;
-      }
-    },
-    editProduct(product) {
-      this.editingId = product.id;
-      this.form.name = product.name;
-      this.form.price = product.price;
-      this.form.brand = product.brand;
-      this.existingImage = product.image.replace("/uploads/", ""); 
-      this.form.image = null; 
-    },
-    resetForm() {
-      this.editingId = null;
-      this.existingImage = null;
-      this.form = { name: "", price: null, brand: "", image: null };
-      this.$refs.fileInput.value = null; 
-    },
-    async submitForm() {
-      try {
-        const formData = new FormData();
-        formData.append("name", this.form.name);
-        formData.append("price", this.form.price);
-        formData.append("brand", this.form.brand);
-        if (this.form.image) {
-          formData.append("image", this.form.image);
-        }
-        
-        if (this.editingId) {
-          formData.append("existingImage", this.existingImage);
-          await axios.put(
-            `http://localhost:3000/api/products/${this.editingId}`,
-            formData,
-            {
-              headers: { "Content-Type": "multipart/form-data" },
-            }
-          );
-        } else {
-          await axios.post("http://localhost:3000/api/products", formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-          });
-        }
-        this.resetForm();
-        this.fetchProducts();
-      } catch (error) {
-        console.error("Error submitting form:", error);
-      }
-    },
-    async deleteProduct(id) {
-      if (!confirm("Are you sure you want to delete this product?")) return;
-      try {
-        await axios.delete(`http://localhost:3000/api/products${id}`);
-        this.fetchProducts();
-      } catch (error) {
-        console.error("Error deleting product:", error);
-      }
-    },
+  async fetchProducts() {
+    try {
+      const response = await axios.get("http://localhost:3000/api/products");
+      this.products = response.data.map(p => ({
+        ...p,
+        image: p.image ? `/uploads/${p.image}` : null
+      }));
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
   },
+  onFileChange(event) {
+    if (event.target.files.length) {
+      this.form.image = event.target.files[0];
+    } else {
+      this.form.image = null;
+    }
+  },
+  editProduct(product) {
+    this.editingId = product.id;
+    this.form.name = product.name;
+    this.form.price = product.price;
+    this.form.brand = product.brand;
+    this.existingImage = product.image ? product.image.replace('/uploads/', '') : null;
+    this.form.image = null;
+    this.$refs.fileInput.value = null; 
+  },
+  resetForm() {
+    this.editingId = null;
+    this.existingImage = null;
+    this.form = { name: "", price: null, brand: "", image: null };
+    if (this.$refs.fileInput) this.$refs.fileInput.value = null;
+  },
+  async submitForm() {
+    try {
+      const formData = new FormData();
+      formData.append("name", this.form.name);
+      formData.append("price", this.form.price);
+      formData.append("brand", this.form.brand);
+      if (this.form.image) {
+        formData.append("image", this.form.image);
+      } else if (this.editingId && this.existingImage) {
+        formData.append("existingImage", this.existingImage);
+      }
+
+      if (this.editingId) {
+        await axios.put(
+          `http://localhost:3000/api/products/${this.editingId}`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+      } else {
+        await axios.post(
+          "http://localhost:3000/api/products",
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+      }
+
+      this.resetForm();
+      this.fetchProducts();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  },
+  async deleteProduct(id) {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+    try {
+      await axios.delete(`http://localhost:3000/api/products/${id}`);
+      this.fetchProducts();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  },
+},
+
 };
 </script>
 

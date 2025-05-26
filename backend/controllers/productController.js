@@ -1,54 +1,54 @@
+const Product = require('../models/Product');
 const fs = require('fs');
 const path = require('path');
-const db = require('../config/dbConfig'); 
-let products = [];
 
-exports.getAllProducts = (req, res) => {
-  db.query('SELECT * FROM products', (err, results) => {
-    if (err) {
-      console.error('Error fetching products:', err);
-      return res.status(500).json({ error: 'Database error' });
-    }
-    res.json(results);
-  });
-}
-
-exports.createProduct = (req, res) => {
-  const { name, price, brand } = req.body;
-  const image = req.file ? req.file.filename : null;
-
-  const newProduct = {
-    id: Date.now(),
-    name,
-    price,
-    brand,
-    image,
-  };
-
-  products.push(newProduct);
-  res.status(201).json(newProduct);
+exports.getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.getAll();
+    res.json(products);
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
 };
 
-exports.updateProduct = (req, res) => {
-  const { id } = req.params;
-  const { name, price, brand } = req.body;
-  const image = req.file ? req.file.filename : null;
+exports.createProduct = async (req, res) => {
+  try {
+    const { name, price, brand } = req.body;
+    const image = req.file ? req.file.filename : null;
 
-  const index = products.findIndex((p) => p.id == id);
-  if (index === -1) return res.status(404).json({ message: 'Product not found' });
-
-  const updated = { ...products[index], name, price, brand };
-  if (image) updated.image = image;
-
-  products[index] = updated;
-  res.json(updated);
+    const id = await Product.create({ name, price, brand, image });
+    const newProduct = await Product.getById(id);
+    res.status(201).json(newProduct);
+  } catch (err) {
+    console.error('Error creating product:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
 };
 
-exports.deleteProduct = (req, res) => {
-  const { id } = req.params;
-  const index = products.findIndex((p) => p.id == id);
-  if (index === -1) return res.status(404).json({ message: 'Product not found' });
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, price, brand, existingImage } = req.body;
+    const image = req.file ? req.file.filename : existingImage || null;
 
-  const deleted = products.splice(index, 1);
-  res.json({ message: 'Product deleted', product: deleted[0] });
+    await Product.update(id, { name, price, brand, image });
+    const updatedProduct = await Product.getById(id);
+    res.json(updatedProduct);
+  } catch (err) {
+    console.error('Error updating product:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await Product.delete(id);
+    res.json({ message: 'Product deleted' });
+  } catch (err) {
+    console.error('Error deleting product:', err);
+    res.status(500).json({ error: 'Database error' });
+  }
 };

@@ -18,4 +18,4 @@ db.connect((err) => {
   console.log("MySQL connected");
 });
 
-module.exports = db;
+module.exports = db.promise();
