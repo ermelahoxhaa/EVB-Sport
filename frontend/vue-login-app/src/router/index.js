@@ -4,7 +4,7 @@ import SignUp from '../components/SignUp.vue'
 import DashboardView from '../components/DashboardView.vue';
 import ProductList from '../components/ProductList.vue';
 import ManageProducts from '../components/ManageProducts.vue';
-import CreateAdmin from '../components/CreateAdmin.vue';
+import CreateAdmin from '../components/CreateAdmin.vue'
 
 
 
