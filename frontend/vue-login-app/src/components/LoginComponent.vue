@@ -1,31 +1,38 @@
 
 <template>
-<body class="custom-body">
+<div class="custom-body">
     <div class="container d-flex justify-content-center align-items-center min-vh-100">
       <div class="wrapper card shadow border-0 p-4">
         <h1 class="text-center mb-4">Login</h1>
-        <form @submit.prevent="login">
+        <form @submit.prevent="handleLogin">
           <div class="input-box form-group mb-3">
-            <label for="username" class="form-label">Përdoruesi:</label>
             <input
-              type="text"
-              v-model="username"
-              id="username"
+              type="email"
+              v-model="email"
+              id="email"
               class="form-control custom-input"
+              placeholder="Email"
               required
             />
           </div>
           <div class="input-box form-group mb-3">
-            <label for="password" class="form-label">Fjalëkalimi:</label>
             <input
               type="password"
               v-model="password"
               id="password"
               class="form-control custom-input"
+              placeholder="Password"
               required
             />
           </div>
           <button type="submit" class="btn w-100 custom-btn">Login</button>
+          <div class="text-center mt-3">
+            <span style="color: rgba(255, 255, 255, 0.8);">Don't have an account? </span>
+            <router-link to="/signup" class="text-decoration-none" style="color: rgb(237, 159, 252); font-weight: 600;">
+              Register here
+            </router-link>
+        </div>
+
         </form>
 
         <div v-if="errorMessage" class="alert alert-danger mt-3 text-center">
@@ -33,8 +40,52 @@
         </div>
       </div>
     </div>
-  </body>
+  </div>
 </template>
+<script>
+import axios from '../axios';
+
+export default {
+  data() {
+    return {
+      email: '',
+      password: '',
+      errorMessage: ''
+    };
+  },
+  methods: {
+    async handleLogin() {
+      try {
+        console.log('I am trying to connect with:', this.email);
+        const response = await axios.post('http://localhost:3000/api/auth/login'
+, {
+          email: this.email,
+          password: this.password
+        });
+
+        
+        const token = response.data.token;
+        const userRole = response.data.role;
+
+        localStorage.setItem('token', token);
+        localStorage.setItem('role', userRole);
+
+        if (userRole === 'user') {
+          this.$router.push('/dashboard'); 
+        } else {
+          this.errorMessage = 'You do not have rights to log in as admin.';
+          localStorage.removeItem('token');
+          localStorage.removeItem('role');
+        }
+      }  catch (error) {
+        this.errorMessage = error.response?.data?.message || 'Server error!';
+        alert(this.errorMessage);
+      }
+    }
+  }
+};
+</script>
+
 
 
 <style scoped>

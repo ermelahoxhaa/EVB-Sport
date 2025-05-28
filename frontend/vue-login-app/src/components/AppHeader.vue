@@ -7,37 +7,41 @@
       </span>
     </router-link>
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button @click="toggleNavbar" class="navbar-toggler">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div :class="['navbar-collapse', { 'active': isNavbarOpen }]">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <router-link to="/" class="nav-link">Home</router-link>
+          <router-link to="/" class="nav-link" active-class="active-link">Home</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/makeup" class="nav-link">Products</router-link>
+          <router-link to="/about" class="nav-link" active-class="active-link">About Us</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/about" class="nav-link">About Us</router-link>
+          <router-link to="/products" class="nav-link" active-class="active-link">Products</router-link>
         </li>
         <li class="nav-item">
-          <router-link to="/login" class="nav-link active">LogIn</router-link>
-        </li>
+  <router-link v-if="route.path === '/signup'" to="/signup" class="nav-link" active-class="active-link">SignUp</router-link>
+  <router-link v-else to="/login" class="nav-link" active-class="active-link">LogIn</router-link>
+</li>
+
       </ul>
     </div>
   </nav>
 </template>
+<script setup>
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
+const isNavbarOpen = ref(false)
+
+const toggleNavbar = () => {
+  isNavbarOpen.value = !isNavbarOpen.value
+}
+</script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600&display=swap');
@@ -83,52 +87,62 @@ body {
     width: 25px;
     height: auto;
 }
-
 .navbar-nav .nav-link {
-  color: black;
-  font-size: 17px;
+  color: rgb(5, 2, 5);
+  font-size: 18px;
   border-radius: 4px;
-  padding: 7px 13px;
+  padding: 10px 13px;
   transition: background-color 0.3s;
+  margin-right: 50px;
 }
 
-.navbar-nav .nav-link.active, .navbar-nav .nav-link:hover {
-  color:rgb(211, 77, 238);
+
+
+.active-link {
+  border-bottom: 2px solid rgb(158, 105, 168);
+  transform: translateY(-5px);
+  transition: all 0.3s ease;   
 }
+.navbar-toggler {
+  display: none;
+  background-color: transparent;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+.navbar-collapse {
+  display: flex;
+}
+
+.navbar-collapse.active {
+  display: block;
+}
+
 
 @media (max-width: 820px) {
-  .navbar .navbar-collapse {
-    position: fixed;
-    left: -150%;
+  .navbar-collapse {
+    display: none;
     width: 100%;
     height: 100vh;
     background-color: rgb(41, 41, 41);
-    transition: left 0.5s;
-    text-align: center;
+    position: absolute;
     top: 61px;
-    margin: 0;
+    left: 0;
+    text-align: center;
     padding-bottom: 150px;
   }
 
   .navbar-nav .nav-item {
-    margin: 15px 0;
+    margin: 20px 0;
   }
 
   .navbar-toggler {
     display: block;
   }
 
-  .navbar-toggler-icon {
-    font-size: 28px;
-    color: black;
-  }
-
   .navbar-nav .nav-link {
-    font-size: 1.1rem;
-  }
-
-  #checkbox:checked ~ .navbar-collapse {
-    left: 0;
+    font-size: 1.2rem;
+    margin: 25px 0;
   }
 }
 </style>

@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const mysql = require('mysql2');
+const db = require('../config/dbConfig');
 
 const app = express();
 app.use(cors());
@@ -51,13 +53,46 @@ function verifyToken(req, res, next) {
     next();
   });
 }
+//Api per produktet 
+app.use('/images', express.static(path.join(__dirname, '../images')));
+app.get('/api', (req, res) => {
+  const query = 'SELECT * FROM products';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Gabim gjatë leximit të produkteve:', err);
+      return res.status(500).json({ error: 'Gabim në server' });
+    }
+
+    res.json(results);
+  });
+});
+app.get('/api/products', (req, res) => {
+  console.log('Request për /api/products ka mbërritur!'); 
+
+  const query = 'SELECT * FROM products';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Gabim gjatë leximit të produkteve:', err);
+      return res.status(500).json({ error: 'Gabim në server' });
+    }
+
+    console.log('Produkte u gjetën:', results);
+    res.json(results);
+  });
+});
+
 
 // Rruga e mbrojtur
 app.get('/sekret', verifyToken, (req, res) => {
   res.json({ message: `Përshëndetje ${req.user.username}, ky është një mesazh sekret 🔐` });
 });
 
-const PORT = process.env.PORT || 5000;
+const userRoutes = require('./routes/userRoutes'); 
+app.use('/api/users', userRoutes);
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Serveri është duke funksionuar në http://localhost:${PORT}`);
 });
