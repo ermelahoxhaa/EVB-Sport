@@ -7,9 +7,6 @@
           <a class="nav-link text-white" href="#"><i class="fas fa-home me-2"></i>Dashboard</a>
         </li>
         <li class="nav-item mb-2">
-          <a class="nav-link text-white" href="#"><i class="fas fa-comment-dots me-2"></i>Manage Messages</a>
-        </li>
-        <li class="nav-item mb-2">
           <router-link to="/manageproducts" class="nav-link text-white">
             <i class="fas fa-box-open me-2"></i>Products
           </router-link>
@@ -71,11 +68,7 @@ const fetchStats = async () => {
         value: `${products.length} Products`,
         icon: 'fas fa-box-open'
       },
-      {
-        title: 'Total Messages',
-        value: '78 Messages', 
-        icon: 'fas fa-comment-dots'
-      },
+      
       {
         title: 'Total Users',
         value: '56 Users', 
@@ -99,12 +92,12 @@ const updateChart = (productCount) => {
   chartInstance = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['Products Added', 'Messages Received', 'Users Registered'],
+      labels: ['Products Added', 'Users Registered'],
       datasets: [
         {
           data: [productCount, 20, 15],
-          backgroundColor: ['rgba(75,192,192,0.2)', 'rgba(153,102,255,0.2)', 'rgba(255,159,64,0.2)'],
-          borderColor: ['rgba(75,192,192,1)', 'rgba(153,102,255,1)', 'rgba(255,159,64,1)'],
+          backgroundColor: ['rgba(75,192,192,0.2)', 'rgba(255,159,64,0.2)'],
+          borderColor: ['rgba(75,192,192,1)', 'rgba(255,159,64,1)'],
           borderWidth: 1
         }
       ]

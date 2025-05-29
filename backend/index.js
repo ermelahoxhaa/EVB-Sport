@@ -1,12 +1,13 @@
 require('dotenv').config();
-
+const authRoutes = require('./routes/auth'); 
 const express = require('express');
+const userRoutes = require('./routes/userRoutes');
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
-const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/productRoutes');
+console.log('User routes loaded');
 
 
 
@@ -20,7 +21,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
-
+app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 3000;
 

@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../config/dbConfig'); 
-const ROLES = require('../config/roles');
+const db = require('../config/dbConfig');
 
 class AuthController {
   static async login(req, res) {
@@ -21,16 +20,17 @@ class AuthController {
       }
 
       const token = jwt.sign(
-        { id: user.id, role: user.role || 'user' }, 
-        process.env.JWT_SECRET, 
+        { id: user.id, role: user.role },
+        process.env.JWT_SECRET,
         { expiresIn: '1h' }
       );
-      res.json({ token, role: user.role || 'user' });
+
+      res.json({ token, role: user.role === 1 ? 'admin' : 'user' });
     } catch (err) {
       console.error('Error during login:', err.message);
       res.status(500).json({ message: 'Error while processing the request.' });
     }
-  };
+  }
 
   static async signup(req, res) {
     const { email, password, name } = req.body;
@@ -42,11 +42,14 @@ class AuthController {
     try {
       const [existingUser] = await db.query('SELECT * FROM users_ WHERE email = ?', [email]);
       if (existingUser.length > 0) {
-        return res.status(409).json({ message: 'Email exists.' });
+        return res.status(409).json({ message: 'Email already exists.' });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      await db.query('INSERT INTO users_ (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword]);
+      await db.query(
+        'INSERT INTO users_ (name, email, password, role) VALUES (?, ?, ?, ?)',
+        [name, email, hashedPassword, 0] // default user role
+      );
       res.status(201).json({ message: 'User was successfully registered.' });
     } catch (err) {
       console.error('Error during registration:', err.message);

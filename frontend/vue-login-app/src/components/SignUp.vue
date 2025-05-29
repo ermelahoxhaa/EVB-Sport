@@ -86,7 +86,6 @@ const errorMessage = ref('');
 const firstName = ref('');
 const lastName = ref('');
 
-
 const signup = async () => {
   if (password.value !== confirmPassword.value) {
     errorMessage.value = 'Passwords do not match!';
@@ -96,22 +95,23 @@ const signup = async () => {
   const fullName = `${firstName.value} ${lastName.value}`;
 
   try {
-    const res = await axios.post('http://localhost:3000/api/auth/signup', {
-      email: email.value,
-      password: password.value,
-      name: fullName, 
-    });
+    await axios.post('/auth/signup', {
 
-    console.log(res.data);
+  name: fullName,
+  email: email.value,
+  password: password.value,
+  role: 'user',
+});
+
 
     alert('Registration was successful!');
-    window.location.href = '/login'; 
-    
+    window.location.href = '/login';
   } catch (err) {
     errorMessage.value = err.response?.data?.message || 'Error during registration!';
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');

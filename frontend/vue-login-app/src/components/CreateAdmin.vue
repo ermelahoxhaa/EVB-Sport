@@ -30,6 +30,7 @@
           :required="!editingId"
         />
       </div>
+
       <button
         type="submit"
         class="btn btn-primary"
@@ -79,7 +80,6 @@
         </tbody>
       </table>
     </div>
-
     <div v-else>
       <p>No admins found.</p>
     </div>
@@ -102,14 +102,21 @@ export default {
       editingId: null
     };
   },
-  created() {
-    this.fetchAdmins();
-  },
+  /*async created() {
+    const role = parseInt(localStorage.getItem('role'));
+    if (role !== 1) {
+      alert('You are not authorized to view this page.');
+      this.$router.push('/login');
+      return;
+   
+
+    await this.fetchAdmins();
+  }, }*/
   methods: {
     async fetchAdmins() {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:3000/api/users', {
+        const res = await axios.get('http://localhost:3000/api/users?role=1', {
           headers: { Authorization: `Bearer ${token}` }
         });
         this.admins = res.data;
@@ -117,32 +124,32 @@ export default {
         console.error('Error fetching admins:', err);
       }
     },
-    async submitForm() {
-      const token = localStorage.getItem('token');
-      try {
-        if (this.editingId) {
-          await axios.put(
-            `http://localhost:3000/api/users/${this.editingId}`,
-            { ...this.form },
-            {
-              headers: { Authorization: `Bearer ${token}` }
-            }
-          );
-        } else {
-          await axios.post(
-            'http://localhost:3000/api/users/create-admin',
-            { ...this.form },
-            {
-              headers: { Authorization: `Bearer ${token}` }
-            }
-          );
-        }
-        this.resetForm();
-        this.fetchAdmins();
-      } catch (err) {
-        console.error('Error saving admin:', err);
-      }
-    },
+   async submitForm() {
+  const token = localStorage.getItem('token');
+  try {
+    const payload = {
+      name: this.form.name,
+      email: this.form.email,
+      password: this.form.password,
+      role: 1,
+    };
+
+    if (this.editingId) {
+      await axios.put(`http://localhost:3000/api/users/${this.editingId}`, payload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } else {
+      await axios.post('http://localhost:3000/api/users/create-admin', payload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    }
+    this.resetForm();
+    this.fetchAdmins();
+  } catch (err) {
+    console.error('Error submitting admin:', err);
+  }
+}
+,
     editAdmin(admin) {
       this.editingId = admin._id;
       this.form.name = admin.name;

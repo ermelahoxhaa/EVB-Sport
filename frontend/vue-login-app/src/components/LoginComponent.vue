@@ -55,36 +55,36 @@ export default {
   },
   methods: {
     async handleLogin() {
-      try {
-        console.log('I am trying to connect with:', this.email);
-        const response = await axios.post('http://localhost:3000/api/auth/login'
-, {
-          email: this.email,
-          password: this.password
-        });
+  try {
+    const response = await axios.post('http://localhost:3000/api/auth/login', {
+      email: this.email,
+      password: this.password,
+    });
 
-        
-        const token = response.data.token;
-        const userRole = response.data.role;
+    const { token, role } = response.data;
 
-        localStorage.setItem('token', token);
-        localStorage.setItem('role', userRole);
+    localStorage.setItem('token', token);
+    localStorage.setItem('role', role);
 
-        if (userRole === 'user') {
-          this.$router.push('/dashboard'); 
-        } else {
-          this.errorMessage = 'You do not have rights to log in as admin.';
-          localStorage.removeItem('token');
-          localStorage.removeItem('role');
-        }
-      }  catch (error) {
-        this.errorMessage = error.response?.data?.message || 'Server error!';
-        alert(this.errorMessage);
-      }
-    }
+    /*if (role === 1) {
+      this.$router.push('/dashboard');
+    } else if (role === 0) {
+      this.$router.push('/manageadmin');
+    }else {
+      this.errorMessage = 'Unauthorized role';
+      localStorage.removeItem('token');
+      localStorage.removeItem('role');
+    }*/
+   this.$router.push('/dashboard');
+  } catch (error) {
+    this.errorMessage = error.response?.data?.message || 'Server error!';
+  }
+}
+
   }
 };
 </script>
+
 
 
 
