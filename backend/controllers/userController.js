@@ -7,7 +7,7 @@ class UserController {
     try {
       const [admins] = await db.query(
         `SELECT u.id, u.username, u.email, ur.role
-         FROM users u
+         FROM users_ u
          JOIN user_roles ur ON u.id = ur.user_id
          WHERE ur.role = ?`,
         [ROLES.ADMIN]
@@ -15,7 +15,7 @@ class UserController {
       res.json(admins);
     } catch (err) {
       console.error('Fetch admins error:', err);
-      res.status(500).json({ message: 'Gabim në server.' });
+      res.status(500).json({ message: 'Server error.' });
     }
   }
 
@@ -23,18 +23,18 @@ class UserController {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      return res.status(400).json({ message: 'Të gjitha fushat janë të detyrueshme.' });
+      return res.status(400).json({ message: 'All fields are required.' });
     }
 
     try {
-      const [existing] = await db.query('SELECT * FROM users WHERE username = ? OR email = ?', [username, email]);
+      const [existing] = await db.query('SELECT * FROM users_ WHERE username = ? OR email = ?', [username, email]);
       if (existing.length > 0) {
-        return res.status(409).json({ message: 'Username ose email ekziston.' });
+        return res.status(409).json({ message: 'Username or email exists.' });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const [result] = await db.query(
-        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+        'INSERT INTO users_ (username, email, password) VALUES (?, ?, ?)',
         [username, email, hashedPassword]
       );
 
@@ -42,10 +42,10 @@ class UserController {
 
       await db.query('INSERT INTO user_roles (user_id, role) VALUES (?, ?)', [userId, ROLES.ADMIN]);
 
-      res.status(201).json({ message: 'Admin u krijua me sukses.' });
+      res.status(201).json({ message: 'Admin created successfully.' });
     } catch (err) {
       console.error('Create admin error:', err);
-      res.status(500).json({ message: 'Gabim në server.' });
+      res.status(500).json({ message: 'Server Error.' });
     }
   }
 
@@ -58,9 +58,8 @@ class UserController {
     }
 
     try {
-      // Kontrollo nëse email ekziston për user tjetër (jo për vetveten)
       const [existing] = await db.query(
-        'SELECT * FROM users WHERE email = ? AND id != ?',
+        'SELECT * FROM users_ WHERE email = ? AND id != ?',
         [email, id]
       );
       if (existing.length > 0) {
@@ -72,15 +71,14 @@ class UserController {
         hashedPassword = await bcrypt.hash(password, 10);
       }
 
-      // Ndrysho të dhënat e user-it
       if (hashedPassword) {
         await db.query(
-          'UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?',
+          'UPDATE users_ SET name = ?, email = ?, password = ? WHERE id = ?',
           [name, email, hashedPassword, id]
         );
       } else {
         await db.query(
-          'UPDATE users SET name = ?, email = ? WHERE id = ?',
+          'UPDATE users_ SET name = ?, email = ? WHERE id = ?',
           [name, email, id]
         );
       }
@@ -91,21 +89,20 @@ class UserController {
       res.status(500).json({ message: 'Server error' });
     }
   }
+
   static async deleteAdmin(req, res) {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    // Fshi admin dhe rolin e tij
-    await db.query('DELETE FROM user_roles WHERE user_id = ?', [id]);
-    await db.query('DELETE FROM users WHERE id = ?', [id]);
+    try {
+      await db.query('DELETE FROM user_roles WHERE user_id = ?', [id]);
+      await db.query('DELETE FROM users_ WHERE id = ?', [id]);
 
-    res.json({ message: 'Admin deleted successfully' });
-  } catch (err) {
-    console.error('Delete admin error:', err);
-    res.status(500).json({ message: 'Server error' });
+      res.json({ message: 'Admin deleted successfully' });
+    } catch (err) {
+      console.error('Delete admin error:', err);
+      res.status(500).json({ message: 'Server error' });
+    }
   }
-}
-
 }
 
 module.exports = UserController;

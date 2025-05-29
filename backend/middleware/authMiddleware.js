@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = 'sekret_i_sigurt';
+const SECRET_KEY = process.env.JWT_SECRET;
 const ROLES = require('../config/roles');
 class AuthMiddleware {
   static authenticateToken(req, res, next) {

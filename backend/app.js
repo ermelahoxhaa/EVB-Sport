@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const SECRET_KEY = 'sekret_'; 
+const SECRET_KEY = process.env.JWT_SECRET; 
 
 
 const users = [
@@ -23,7 +23,6 @@ app.post('/login', (req, res) => {
   const user = users.find(u => u.username === username && u.password === password);
 
   if (user) {
-    // Krijimi JWT token
     const token = jwt.sign(
       { id: user.id, username: user.username },
       SECRET_KEY,
@@ -39,7 +38,6 @@ app.post('/login', (req, res) => {
   }
 });
 
-// Middleware për verifikimin e tokenit
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
 
@@ -53,7 +51,6 @@ function verifyToken(req, res, next) {
     next();
   });
 }
-//Api per produktet 
 app.use('/images', express.static(path.join(__dirname, '../images')));
 app.get('/api', (req, res) => {
   const query = 'SELECT * FROM products';
@@ -84,7 +81,6 @@ app.get('/api/products', (req, res) => {
 });
 
 
-// Rruga e mbrojtur
 app.get('/sekret', verifyToken, (req, res) => {
   res.json({ message: `Përshëndetje ${req.user.username}, ky është një mesazh sekret 🔐` });
 });
