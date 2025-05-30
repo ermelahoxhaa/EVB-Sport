@@ -4,6 +4,16 @@
 
     <form @submit.prevent="submitForm" class="mb-5" enctype="multipart/form-data">
       <div class="mb-3">
+         <div v-if="showBackButton" class="col-auto">
+          <button
+            type="button"
+            class="btn btn-outline-secondary back-btn"
+            title="Back to Dashboard"
+            @click="goBack"
+          >
+            <i class="bi bi-arrow-left"></i>
+          </button>
+        </div>
         <input
           v-model="form.name"
           type="text"
@@ -100,8 +110,18 @@ export default {
       },
       editingId: null,
       existingImage: null, 
+      showBackButton: false
+
     };
   },
+  mounted() {
+  
+  if (window.location.pathname === '/manageproducts') {
+    this.showBackButton = true;
+  } 
+
+  this.fetchProducts();
+},
   created() {
     this.fetchProducts();
   },
@@ -117,6 +137,10 @@ export default {
       console.error("Error fetching products:", error);
     }
   },
+  goBack() {
+    this.$router.push('/dashboard');
+  },
+
   onFileChange(event) {
     if (event.target.files.length) {
       this.form.image = event.target.files[0];
@@ -186,6 +210,30 @@ export default {
 </script>
 
 <style scoped>
+.back-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  padding: 0;
+  margin-left: -80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.back-btn i {
+  margin: 0;
+}
+
+.back-btn:hover {
+  background-color: rgb(128, 97, 114);
+  color: white;
+  border-color: rgb(128, 97, 114);
+  transition: background-color 0.3s ease;
+}
+
 .card {
   border-radius: 12px;
 }

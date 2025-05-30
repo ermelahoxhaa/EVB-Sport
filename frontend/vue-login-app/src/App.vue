@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <AppHeader />
+    <AppHeader v-if="!hideLayout"/>
     <router-view />
-    <AppFooter />
+    <AppFooter v-if="!hideLayout"/>
   </div>
 </template>
 
@@ -14,7 +14,14 @@ export default {
   components: {
     AppHeader,
     AppFooter
+    },
+    computed: {
+    hideLayout() {
+return this.$route.path === '/dashboard' || this.$route.path === '/manageproducts' || this.$route.path === '/manageadmin';
+
     }
+  }
+
 }
 </script>
 

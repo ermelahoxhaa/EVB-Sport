@@ -1,9 +1,22 @@
 <template>
+  
   <div class="container py-4">
+    
     <h2 class="mb-4">Manage Admins</h2>
+    
 
     <form @submit.prevent="submitForm" class="mb-5">
       <div class="mb-3">
+         <div v-if="showBackButton" class="col-auto">
+          <button
+            type="button"
+            class="btn btn-outline-secondary back-btn"
+            title="Back to Dashboard"
+            @click="goBack"
+          >
+            <i class="bi bi-arrow-left"></i>
+          </button>
+        </div>
         <input
           v-model="form.name"
           type="text"
@@ -99,9 +112,17 @@ export default {
         email: '',
         password: ''
       },
-      editingId: null
+      editingId: null,
+      showBackButton: false
     };
   },
+ mounted() {
+  if (window.location.pathname === '/manageadmin') {
+    this.showBackButton = true;
+  } 
+
+  this.fetchAdmins();
+},
   /*async created() {
     const role = parseInt(localStorage.getItem('role'));
     if (role !== 1) {
@@ -124,6 +145,10 @@ export default {
         console.error('Error fetching admins:', err);
       }
     },
+    goBack() {
+    this.$router.push('/dashboard');
+  },
+  
    async submitForm() {
   const token = localStorage.getItem('token');
   try {
@@ -181,6 +206,30 @@ export default {
 </script>
 
 <style scoped>
+.back-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  padding: 0;
+  margin-left: -80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.back-btn i {
+  margin: 0;
+}
+
+.back-btn:hover {
+  background-color: rgb(128, 97, 114);
+  color: white;
+  border-color: rgb(128, 97, 114);
+  transition: background-color 0.3s ease;
+}
+
 .table th,
 .table td {
   vertical-align: middle;
