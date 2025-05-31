@@ -3,9 +3,10 @@ const SECRET_KEY = process.env.JWT_SECRET;
 
 class AuthMiddleware {
   static authenticateToken(req, res, next) {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
-    
-    if (!token) {
+const token = req.cookies.token || 
+               (req.headers.authorization && req.headers.authorization.split(' ')[1]);
+
+      if (!token) {
       return res.status(403).json({ message: 'Access denied. No token provided.' });
     }
 

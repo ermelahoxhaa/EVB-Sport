@@ -123,26 +123,20 @@ export default {
 
   this.fetchAdmins();
 },
-  /*async created() {
-    const role = parseInt(localStorage.getItem('role'));
-    if (role !== 1) {
-      alert('You are not authorized to view this page.');
-      this.$router.push('/login');
-      return;
-   
-
-    await this.fetchAdmins();
-  }, }*/
+ 
   methods: {
     async fetchAdmins() {
-      try {
-        const token = localStorage.getItem('token');
+        try {
         const res = await axios.get('http://localhost:3000/api/users?role=1', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        this.admins = res.data;
+          withCredentials: true 
+        })
+        this.admins = res.data
       } catch (err) {
-        console.error('Error fetching admins:', err);
+        console.error('Error fetching admins:', err)
+        if (err.response?.status === 401) {
+          alert('You are not authorized. Please login again.')
+          this.$router.push('/login')
+        }
       }
     },
     goBack() {
@@ -150,7 +144,6 @@ export default {
   },
   
    async submitForm() {
-  const token = localStorage.getItem('token');
   try {
     const payload = {
       name: this.form.name,
@@ -161,12 +154,12 @@ export default {
 
     if (this.editingId) {
       await axios.put(`http://localhost:3000/api/users/${this.editingId}`, payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+        withCredentials: true }
+      )
     } else {
       await axios.post('http://localhost:3000/api/users/create-admin', payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+        withCredentials: true }
+      )
     }
     this.resetForm();
     this.fetchAdmins();
@@ -190,12 +183,12 @@ export default {
       };
     },
     async deleteAdmin(id) {
-      if (!confirm('Are you sure you want to delete this admin?')) return;
-      const token = localStorage.getItem('token');
+      if (!confirm('Are you sure you want to delete this admin?')) return
+      
       try {
         await axios.delete(`http://localhost:3000/api/users/${id}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+          withCredentials: true
+        })
         this.fetchAdmins();
       } catch (err) {
         console.error('Error deleting admin:', err);

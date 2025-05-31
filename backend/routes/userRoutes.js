@@ -9,12 +9,14 @@ router.get(
   '/',
   AuthMiddleware.authenticateToken,
   AuthMiddleware.authorizeRole(1),
-  (req, res) => {
-    const query = 'SELECT id, name, email, role FROM users_';
-    db.execute(query, (err, results) => {
-      if (err) return res.status(500).json({ message: 'Database error' });
+  async (req, res) => {
+    try {
+      const query = 'SELECT id, name, email, role FROM users_';
+      const [results] = await db.execute(query);
       res.json(results);
-    });
+    } catch (err) {
+      res.status(500).json({ message: 'Database error' });
+    }
   }
 );
 
@@ -59,5 +61,9 @@ router.post('/create-admin', async (req, res) => {
     });
   });
 });*/
+router.get('/check', AuthMiddleware.authenticateToken, (req, res) => {
+  const { id, role } = req.user;
+  res.json({ userId: id, role: role === 1 ? 'admin' : 'user' });
+});
 
 module.exports = router;

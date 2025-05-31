@@ -46,43 +46,41 @@
 import axios from '../axios';
 
 export default {
+   name: 'LoginComponent',
   data() {
     return {
       email: '',
       password: '',
       errorMessage: ''
-    };
+    }
   },
   methods: {
     async handleLogin() {
-  try {
-    const response = await axios.post('http://localhost:3000/api/auth/login', {
-      email: this.email,
-      password: this.password,
-    });
+      try{
+   const response = await axios.post(
+          'http://localhost:3000/api/auth/login',
+          {
+            email: this.email,
+            password: this.password
+          },
+          {
+            withCredentials: true 
+          }
+        )
 
-    const { token, role } = response.data;
+        const role = response.data.role
 
-    localStorage.setItem('token', token);
-    localStorage.setItem('role', role);
-
-    /*if (role === 1) {
-      this.$router.push('/dashboard');
-    } else if (role === 0) {
-      this.$router.push('/manageadmin');
-    }else {
-      this.errorMessage = 'Unauthorized role';
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
-    }*/
-   this.$router.push('/dashboard');
-  } catch (error) {
-    this.errorMessage = error.response?.data?.message || 'Server error!';
+        if (role === 'admin') {
+          this.$router.push('/dashboard')
+        } else {
+          this.$router.push('/')
+        }
+      } catch (error) {
+        this.errorMessage = error.response?.data?.message || 'Login failed. Try again.'
+      }
+    }
   }
 }
-
-  }
-};
 </script>
 
 
