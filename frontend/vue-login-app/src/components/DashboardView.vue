@@ -39,12 +39,10 @@
               <div class="card-body d-flex flex-column align-items-center">
               <div class="mb-2 d-flex justify-content-center gap-2">
               <template v-if="stat.title === 'Total Products'">
-                <i class="fas fa-shopping-cart text-vjollce display-6"></i>
-                <i class="fas fa-box-open text-vjollce"></i>
+                 <i class="fas fa-shopping-cart stat-icon"></i>
               </template>
               <template v-else-if="stat.title === 'Total Users'">
-                <i class="fas fa-user text-vjollce display-6"></i>
-                <i class="fas fa-user-shield text-vjollce display-6"></i>
+                 <i class="fas fa-user stat-icon"></i>
               </template>
            </div>      
                 <h5 class="card-title">{{ stat.title }}</h5>
@@ -75,7 +73,12 @@ const fetchStats = async () => {
   try {
     const response = await axios.get('http://localhost:3000/api/products')
     const products = response.data
+
+    const usersResponse = await axios.get('http://localhost:3000/api/users', { withCredentials: true })
+    const users = usersResponse.data
+
     console.log('Products from API:', products)
+    console.log('Users fom API:', users)
 
     stats.value = [
       {
@@ -86,18 +89,18 @@ const fetchStats = async () => {
       
       {
         title: 'Total Users',
-        value: '56 Users', 
+        value: `${users.length} Users`, 
         icon: 'fas fa-users'
       }
     ]
 
-    updateChart(products.length)
+    updateChart(products.length, users.length)
   } catch (error) {
     console.error('Error fetching product stats:', error)
   }
 }
 
-const updateChart = (productCount) => {
+const updateChart = (productCount, userCount) => {
   const ctx = document.getElementById('activityChart').getContext('2d')
 
   if (chartInstance) {
@@ -105,12 +108,12 @@ const updateChart = (productCount) => {
   }
 
   chartInstance = new Chart(ctx, {
-    type: 'doughnut',
+    type: 'bar',
     data: {
       labels: ['Products Added', 'Users Registered'],
       datasets: [
         {
-          data: [productCount, 20, 15],
+          data: [productCount, userCount],
           backgroundColor: ['rgba(75,192,192,0.2)', 'rgba(255,159,64,0.2)'],
           borderColor: ['rgba(75,192,192,1)', 'rgba(255,159,64,1)'],
           borderWidth: 1
@@ -156,6 +159,12 @@ canvas {
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 0.25rem;
 }
+.stat-icon {
+  font-size: 1.5rem; 
+  color: rgb(128, 97, 114);
+  margin-bottom: 10px;
+}
+
 
 @media (max-width: 768px) {
   .sidebar {

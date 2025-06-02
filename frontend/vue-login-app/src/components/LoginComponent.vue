@@ -67,6 +67,8 @@ export default {
             withCredentials: true 
           }
         )
+        document.cookie = `token=${response.data.token}; path=/; SameSite=Lax`;
+
 
         const role = response.data.role
 
