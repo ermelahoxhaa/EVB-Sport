@@ -2,6 +2,35 @@
   <div class="container py-4">
     <h2 class="mb-4">Manage Products</h2>
 
+    <button @click="fetchOrders" class="btn btn-outline-dark mb-3">View Orders</button>
+
+<div v-if="orders.length">
+  <h4>Orders List</h4>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>User</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="order in orders" :key="order.id">
+        <td>{{ order.product_name }}</td>
+        <td>{{ order.user_name }}</td>
+        <td>{{ order.email }}</td>
+        <td>{{ order.phone }}</td>
+        <td>{{ order.address }}</td>
+        <td>{{ new Date(order.created_at).toLocaleString() }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
     <form @submit.prevent="submitForm" class="mb-5" enctype="multipart/form-data">
       <div class="mb-3">
          <div v-if="showBackButton" class="col-auto">
@@ -60,7 +89,7 @@
       </button>
     </form>
 
-    <div v-if="products.length" class="row g-3 mb-5">
+    <div v-if="products && products.length > 0" class="row g-3 mb-5">
       <div class="col-md-4" v-for="product in products" :key="product.id">
         <div class="card h-100">
           <img
@@ -102,6 +131,7 @@ export default {
   data() {
     return {
       products: [],
+       orders: [],
       form: {
         name: "",
         price: null,
@@ -205,6 +235,15 @@ export default {
     }
   },
 },
+
+async fetchOrders() {
+    try {
+      const res = await axios.get('http://localhost:3000/api/orders')
+      this.orders = res.data
+    } catch (err) {
+      console.error('Error fetching orders:', err)
+    }
+  }
 
 };
 </script>

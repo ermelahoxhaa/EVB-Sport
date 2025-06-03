@@ -21,22 +21,47 @@
           <img :src="product.image" :alt="product.name" />
           <h3>{{ product.name }}</h3>
           <p class="price">{{ product.price }}€</p>
-          <button class="btn">Add to cart</button>
+          <button class="btn" @click="openOrderForm(product)">Add to cart</button>
         </div>
       </div>
     </section>
+
+    <div v-if="showOrderForm" class="order-form-overlay">
+  <div class="order-form">
+    <h4>Complete your order for: {{ selectedProduct?.name }}</h4>
+    <form @submit.prevent="submitOrder">
+      <input v-model="orderForm.user_name" placeholder="Your Name" required />
+      <input v-model="orderForm.email" placeholder="Email" />
+      <input v-model="orderForm.phone" placeholder="Phone" />
+      <input v-model="orderForm.address" placeholder="Address" />
+      <button type="submit">Submit Order</button>
+      <button @click="showOrderForm = false" type="button">Cancel</button>
+    </form>
+  </div>
+</div>
   </div>
 </div>
 </template>
 
 <script setup>
+import axios from 'axios'
 import { ref, computed, onMounted } from 'vue'
+
+const showOrderForm = ref(false)
+const selectedProduct = ref(null)
 
 const searchQuery = ref('')
 const selectedBrand = ref('')
 const brands = ref([])  
 
 const products = ref([])
+
+const orderForm = ref({
+  user_name: '',
+  email: '',
+  phone: '',
+  address: ''
+})
 
 onMounted(async () => {
   try {
@@ -59,6 +84,25 @@ const filteredProducts = computed(() => {
     return matchesBrand && matchesQuery
   })
 })
+const submitOrder = async () => {
+  try {
+    await axios.post('http://localhost:3000/api/orders', {
+      product_id: selectedProduct.value.id,
+      ...orderForm.value
+    })
+    alert('Order submitted successfully!')
+    showOrderForm.value = false
+    orderForm.value = { user_name: '', email: '', phone: '', address: '' }
+  } catch (err) {
+    console.error('Error submitting order:', err)
+    alert('Failed to submit order.')
+  }
+}
+
+const openOrderForm = (product) => {
+  selectedProduct.value = product
+  showOrderForm.value = true
+}
 </script>
 
 <style scoped>
@@ -144,6 +188,24 @@ const filteredProducts = computed(() => {
 
 .product-item:hover {
   transform: translateY(-5px);
+}
+.order-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.order-form {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
 }
 
 @media (max-width: 768px) {
