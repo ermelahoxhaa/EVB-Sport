@@ -4,8 +4,9 @@
 
     <button @click="fetchOrders" class="btn btn-outline-dark mb-3">View Orders</button>
 
+    <div v-if="showOrders">
+      <h4>Orders List</h4>
 <div v-if="orders.length">
-  <h4>Orders List</h4>
   <table class="table">
     <thead>
       <tr>
@@ -15,6 +16,7 @@
         <th>Phone</th>
         <th>Address</th>
         <th>Date</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -25,10 +27,20 @@
         <td>{{ order.phone }}</td>
         <td>{{ order.address }}</td>
         <td>{{ new Date(order.created_at).toLocaleString() }}</td>
+        <td> <button class="btn btn-success btn-sm" 
+  @click="markAsDelivered(order.id)"
+  :disabled="order.status === 'delivered'"
+>
+  {{ order.status === 'delivered' ? 'Delivered' : 'Mark as Delivered' }}</button>
+            <button class="btn btn-danger btn-sm" @click="deleteOrder(order.id)">Delete</button></td>
       </tr>
     </tbody>
   </table>
 </div>
+<div v-else>
+    <p>No orders found.</p>
+  </div>
+  </div>
 
 
     <form @submit.prevent="submitForm" class="mb-5" enctype="multipart/form-data">
@@ -140,7 +152,8 @@ export default {
       },
       editingId: null,
       existingImage: null, 
-      showBackButton: false
+      showBackButton: false,
+      showOrders: false,
 
     };
   },
@@ -161,7 +174,7 @@ export default {
       const response = await axios.get("http://localhost:3000/api/products");
       this.products = response.data.map(p => ({
         ...p,
-        image: p.image ? `/uploads/${p.image}` : null
+        image: p.image ? `/image/${p.image}` : null
       }));
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -234,17 +247,41 @@ export default {
       console.error("Error deleting product:", error);
     }
   },
-},
 
-async fetchOrders() {
+  async fetchOrders() {
+    if (this.showOrders) {
+      this.orders = []; 
+      this.showOrders = false;
+      return;
+    }
+
     try {
-      const res = await axios.get('http://localhost:3000/api/orders')
-      this.orders = res.data
+      const res = await axios.get('http://localhost:3000/api/orders');
+      this.orders = res.data;
+      this.showOrders = true;
     } catch (err) {
-      console.error('Error fetching orders:', err)
+      console.error('Error fetching orders:', err);
+    }
+},
+  async markAsDelivered(id) {
+    try {
+      await axios.put(`http://localhost:3000/api/orders/${id}/delivered`);
+      this.fetchOrders(); 
+    } catch (err) {
+      console.error("Error marking as delivered:", err);
+    }
+  },
+
+  async deleteOrder(id) {
+    if (!confirm("Are you sure you want to delete this order?")) return;
+    try {
+      await axios.delete(`http://localhost:3000/api/orders/${id}`);
+      this.fetchOrders(); 
+    } catch (err) {
+      console.error("Error deleting order:", err);
     }
   }
-
+  }
 };
 </script>
 

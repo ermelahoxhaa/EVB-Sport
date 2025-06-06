@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const db = require('../config/dbConfig');
 const AuthMiddleware = require('../middleware/authMiddleware');
-
+const UserController = require('../controllers/UserController');
 const router = express.Router();
 
 router.get(
@@ -65,5 +65,7 @@ router.get('/check', AuthMiddleware.authenticateToken, (req, res) => {
   const { id, role } = req.user;
   res.json({ userId: id, role: role === 1 ? 'admin' : 'user' });
 });
+router.put('/:id', AuthMiddleware.authenticateToken, UserController.updateUser);
+router.delete('/:id', AuthMiddleware.authenticateToken, UserController.deleteUser);
 
 module.exports = router;
