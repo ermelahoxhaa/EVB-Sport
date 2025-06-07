@@ -203,10 +203,65 @@ const openOrderForm = (product) => {
 
 .order-form {
   background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 300px;
+  padding: 30px 25px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-family: 'Quicksand', sans-serif;
 }
+
+.order-form h4 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.order-form input {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.order-form input:focus {
+  outline: none;
+  border-color: #8859a4;
+}
+
+.order-form button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  background-color: #6d4c80;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.order-form button:hover {
+  background-color: #55356e;
+  transform: translateY(-2px);
+}
+
+.order-form button[type="button"] {
+  background-color: #ddd;
+  color: #333;
+  margin-top: 10px;
+}
+
+.order-form button[type="button"]:hover {
+  background-color: #ccc;
+}
+
 
 @media (max-width: 768px) {
   .search input {

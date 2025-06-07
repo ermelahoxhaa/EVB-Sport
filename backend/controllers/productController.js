@@ -14,10 +14,10 @@ exports.getAllProducts = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    const { name, price, brand } = req.body;
+    const { name, price, brand, stock} = req.body;
     const image = req.file ? req.file.filename : null;
 
-    const id = await Product.create({ name, price, brand, image });
+    const id = await Product.create({ name, price, brand, stock, image });
     const newProduct = await Product.getById(id);
     res.status(201).json(newProduct);
   } catch (err) {
@@ -29,10 +29,10 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, price, brand, existingImage } = req.body;
+    const { name, price, brand, existingImage, stock } = req.body;
     const image = req.file ? req.file.filename : existingImage || null;
 
-    await Product.update(id, { name, price, brand, image });
+    await Product.update(id, { name, price, brand, stock, image });
     const updatedProduct = await Product.getById(id);
     res.json(updatedProduct);
   } catch (err) {

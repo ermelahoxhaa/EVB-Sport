@@ -32,6 +32,18 @@ router.get('/', async (req, res) => {
 router.put('/:id/delivered', async (req, res) => {
   const { id } = req.params;
   try {
+    const [rows] = await db.query('SELECT * FROM orders WHERE id = ?', [id]);
+    const order = rows[0];
+    if (!order || order.status === 'delivered') {
+      return res.status(400).json({ error: 'Invalid or already delivered order' });
+    }
+
+    await db.query(
+      `UPDATE product_details SET stock = GREATEST(stock - 1, 0)
+       WHERE product_id = ?`,
+      [order.product_id]
+    );
+
     await db.query("UPDATE orders SET status = 'delivered' WHERE id = ?", [id]);
     res.sendStatus(200);
   } catch (err) {

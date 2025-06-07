@@ -112,7 +112,9 @@
           />
           <div class="card-body">
             <h5 class="card-title">{{ product.name }}</h5>
-            <p class="card-text">{{ product.brand }} - ${{ product.price }}</p>
+            <p class="card-text">{{ product.brand }} - ${{ product.price }}<br />
+              <strong>Stock: {{ product.stock }}</strong>
+            </p>
             <button class="btn btn-primary" @click="editProduct(product)"
             style="background-color: rgb(128, 97, 114); border-color: rgb(100, 75, 90);">
               Edit
@@ -148,6 +150,7 @@ export default {
         name: "",
         price: null,
         brand: "",
+        stock: null,
         image: null, 
       },
       editingId: null,
@@ -203,7 +206,7 @@ export default {
   resetForm() {
     this.editingId = null;
     this.existingImage = null;
-    this.form = { name: "", price: null, brand: "", image: null };
+    this.form = { name: "", price: null, brand: "", stock: null, image: null };
     if (this.$refs.fileInput) this.$refs.fileInput.value = null;
   },
   async submitForm() {
@@ -212,6 +215,7 @@ export default {
       formData.append("name", this.form.name);
       formData.append("price", this.form.price);
       formData.append("brand", this.form.brand);
+      formData.append("stock", this.form.stock);
       if (this.form.image) {
         formData.append("image", this.form.image);
       } else if (this.editingId && this.existingImage) {
@@ -219,25 +223,22 @@ export default {
       }
 
       if (this.editingId) {
-        await axios.put(
-          `http://localhost:3000/api/products/${this.editingId}`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
-      } else {
-        await axios.post(
-          "http://localhost:3000/api/products",
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+      if (this.form.image) {
+        formData.append("image", this.form.image);
+      } else if (this.existingImage) {
+        formData.append("existingImage", this.existingImage);
       }
-
-      this.resetForm();
-      this.fetchProducts();
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    } else if (this.form.image) {
+      formData.append("image", this.form.image);
     }
-  },
+        const url = this.editingId ? `http://localhost:3000/api/products/${this.editingId}` : "http://localhost:3000/api/products";
+        const method = this.editingId ? axios.put : axios.post;
+        await method(url, formData, { headers: { "Content-Type": "multipart/form-data" } });
+        this.resetForm(); this.fetchProducts();
+      } catch (e) {
+        console.error(e);
+      }
+    },
   async deleteProduct(id) {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
@@ -267,6 +268,7 @@ export default {
     try {
       await axios.put(`http://localhost:3000/api/orders/${id}/delivered`);
       this.fetchOrders(); 
+      this.fetchProducts();
     } catch (err) {
       console.error("Error marking as delivered:", err);
     }
