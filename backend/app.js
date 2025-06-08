@@ -5,11 +5,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
-const db = require('../config/dbConfig');
+const db = require('./config/dbConfig');
 
 const authRoutes = require('./routes/auth');       
 const userRoutes = require('./routes/userRoutes'); 
 const productRoutes = require('./routes/productRoutes'); 
+const aboutUsRoutes = require('./routes/aboutUsRoutes');
+
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -21,9 +23,10 @@ app.use(cookieParser());
 app.use('/images', express.static(path.join(__dirname, '../images')));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-app.use('/api/auth', auth);        
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);       
 app.use('/api/products', productRoutes); 
+app.use('/api/about-us', aboutUsRoutes); 
 
 app.get('/api', (req, res) => {
   const query = 'SELECT * FROM products';
