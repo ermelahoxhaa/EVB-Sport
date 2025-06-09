@@ -44,6 +44,9 @@
               <template v-else-if="stat.title === 'Total Users'">
                  <i class="fas fa-user stat-icon"></i>
               </template>
+              <template v-else-if="stat.title === 'Total Orders'">
+  <i class="fas fa-shopping-bag stat-icon"></i>
+</template>
            </div>      
                 <h5 class="card-title">{{ stat.title }}</h5>
                 <p class="card-text text-muted">{{ stat.value }}</p>
@@ -65,7 +68,8 @@
 import { ref, onMounted } from 'vue'
 import Chart from 'chart.js/auto'
 import axios from 'axios'
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const stats = ref([])
 let chartInstance = null
 
@@ -77,8 +81,12 @@ const fetchStats = async () => {
     const usersResponse = await axios.get('http://localhost:3000/api/users', { withCredentials: true })
     const users = usersResponse.data
 
+    const ordersresponse = await axios.get('http://localhost:3000/api/orders')
+    const orders = ordersresponse.data
+
     console.log('Products from API:', products)
     console.log('Users fom API:', users)
+    console.log('Orders fom API:', orders)
 
     stats.value = [
       {
@@ -91,16 +99,21 @@ const fetchStats = async () => {
         title: 'Total Users',
         value: `${users.length} Users`, 
         icon: 'fas fa-users'
+      },
+      {
+        title: 'Total Orders',
+        value: `${orders.length} Orders`,
+        icon: 'fas fa-shopping-bag'
       }
     ]
 
-    updateChart(products.length, users.length)
+    updateChart(products.length, users.length, orders.length)
   } catch (error) {
     console.error('Error fetching product stats:', error)
   }
 }
 
-const updateChart = (productCount, userCount) => {
+const updateChart = (productCount, userCount, orderCount) => {
   const ctx = document.getElementById('activityChart').getContext('2d')
 
   if (chartInstance) {
@@ -110,12 +123,12 @@ const updateChart = (productCount, userCount) => {
   chartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Products Added', 'Users Registered'],
+      labels: ['Products Added', 'Users Registered', 'Orders Placed'],
       datasets: [
         {
-          data: [productCount, userCount],
-          backgroundColor: ['rgba(75,192,192,0.2)', 'rgba(255,159,64,0.2)'],
-          borderColor: ['rgba(75,192,192,1)', 'rgba(255,159,64,1)'],
+          data: [productCount, userCount, orderCount],
+          backgroundColor: ['rgba(75,192,192,0.2)', 'rgba(255,159,64,0.2)', 'rgba(153,102,255,0.2)'],
+          borderColor: ['rgba(75,192,192,1)', 'rgba(255,159,64,1)', 'rgba(153,102,255,1)'],
           borderWidth: 1
         }
       ]
@@ -128,8 +141,13 @@ const updateChart = (productCount, userCount) => {
 }
 
 onMounted(() => {
-  fetchStats()
-})
+  const role = parseInt(localStorage.getItem('role'));
+  if (role !== 1) {
+    router.push('/login');
+  }
+},
+fetchStats()
+);
 </script>
 
 <style scoped>

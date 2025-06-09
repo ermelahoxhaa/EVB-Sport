@@ -5,7 +5,7 @@
     <h2 class="mb-4">Manage Admins</h2>
     
 
-    <form @submit.prevent="submitForm" class="mb-5">
+    <form v-if="formVisible" @submit.prevent="submitForm" class="mb-5">
       <div class="mb-3">
          <div v-if="showBackButton" class="col-auto">
           <button
@@ -71,9 +71,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="admin in admins" :key="admin._id">
+          <tr v-for="admin in admins" :key="admin.id">
             <td>{{ admin.name }}</td>
             <td>{{ admin.email }}</td>
+            <td>{{ admin.role === 1 ? 'Admin' : 'User' }}</td>
             <td>
               <button
                 class="btn btn-sm btn-primary me-2"
@@ -84,7 +85,7 @@
               </button>
               <button
                 class="btn btn-sm btn-danger"
-                @click="deleteAdmin(admin._id)"
+                @click="deleteAdmin(admin.id)"
               >
                 Delete
               </button>
@@ -113,9 +114,16 @@ export default {
         password: ''
       },
       editingId: null,
-      showBackButton: false
+      showBackButton: false,
+      formVisible: true,
     };
   },
+  created() {
+  this.resetForm();
+    this.$nextTick(() => {
+    this.fetchAdmins();
+     });
+},
  mounted() {
   if (window.location.pathname === '/manageadmin') {
     this.showBackButton = true;
@@ -162,26 +170,29 @@ export default {
       )
     }
     this.resetForm();
-    this.fetchAdmins();
   } catch (err) {
     console.error('Error submitting admin:', err);
   }
 }
 ,
     editAdmin(admin) {
-      this.editingId = admin._id;
+      this.editingId = admin.id;
       this.form.name = admin.name;
       this.form.email = admin.email;
       this.form.password = '';
     },
     resetForm() {
-      this.editingId = null;
-      this.form = {
-        name: '',
-        email: '',
-        password: ''
-      };
-    },
+  this.editingId = null;
+
+  this.form.name = '';
+  this.form.email = '';
+  this.form.password = '';
+
+  this.$nextTick(() => {
+    const inputs = document.querySelectorAll('input');
+    inputs.forEach(input => input.blur());
+  });
+},
     async deleteAdmin(id) {
       if (!confirm('Are you sure you want to delete this admin?')) return
       

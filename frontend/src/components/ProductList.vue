@@ -18,25 +18,50 @@
     <section id="products" class="mt-4">
       <div class="product-list">
         <div v-for="product in filteredProducts" :key="product.id" class="product-item">
-          <img :src="product.image" :alt="product.name" />
+          <img :src="product.image ? `http://localhost:3000/uploads/${product.image}` : ''" :alt="product.name" />
           <h3>{{ product.name }}</h3>
           <p class="price">{{ product.price }}€</p>
-          <button class="btn">Add to cart</button>
+          <button class="btn" @click="openOrderForm(product)">Add to cart</button>
         </div>
       </div>
     </section>
+
+    <div v-if="showOrderForm" class="order-form-overlay">
+  <div class="order-form">
+    <h4>Complete your order for: {{ selectedProduct?.name }}</h4>
+    <form @submit.prevent="submitOrder">
+      <input v-model="orderForm.user_name" placeholder="Your Name" required />
+      <input v-model="orderForm.email" placeholder="Email" />
+      <input v-model="orderForm.phone" placeholder="Phone" />
+      <input v-model="orderForm.address" placeholder="Address" />
+      <button type="submit">Submit Order</button>
+      <button @click="showOrderForm = false" type="button">Cancel</button>
+    </form>
+  </div>
+</div>
   </div>
 </div>
 </template>
 
 <script setup>
+import axios from 'axios'
 import { ref, computed, onMounted } from 'vue'
+
+const showOrderForm = ref(false)
+const selectedProduct = ref(null)
 
 const searchQuery = ref('')
 const selectedBrand = ref('')
 const brands = ref([])  
 
 const products = ref([])
+
+const orderForm = ref({
+  user_name: '',
+  email: '',
+  phone: '',
+  address: ''
+})
 
 onMounted(async () => {
   try {
@@ -59,6 +84,25 @@ const filteredProducts = computed(() => {
     return matchesBrand && matchesQuery
   })
 })
+const submitOrder = async () => {
+  try {
+    await axios.post('http://localhost:3000/api/orders', {
+      product_id: selectedProduct.value.id,
+      ...orderForm.value
+    })
+    alert('Order submitted successfully!')
+    showOrderForm.value = false
+    orderForm.value = { user_name: '', email: '', phone: '', address: '' }
+  } catch (err) {
+    console.error('Error submitting order:', err)
+    alert('Failed to submit order.')
+  }
+}
+
+const openOrderForm = (product) => {
+  selectedProduct.value = product
+  showOrderForm.value = true
+}
 </script>
 
 <style scoped>
@@ -145,6 +189,79 @@ const filteredProducts = computed(() => {
 .product-item:hover {
   transform: translateY(-5px);
 }
+.order-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.order-form {
+  background: white;
+  padding: 30px 25px;
+  border-radius: 15px;
+  width: 350px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-family: 'Quicksand', sans-serif;
+}
+
+.order-form h4 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.order-form input {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.order-form input:focus {
+  outline: none;
+  border-color: #8859a4;
+}
+
+.order-form button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 8px;
+  background-color: #6d4c80;
+  color: white;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.order-form button:hover {
+  background-color: #55356e;
+  transform: translateY(-2px);
+}
+
+.order-form button[type="button"] {
+  background-color: #ddd;
+  color: #333;
+  margin-top: 10px;
+}
+
+.order-form button[type="button"]:hover {
+  background-color: #ccc;
+}
+
 
 @media (max-width: 768px) {
   .search input {

@@ -17,6 +17,7 @@ class Product {
       d.price,
       d.image,
       d.brand,
+      d.stock,
       d.modified_at
     FROM products p
     JOIN product_details d ON p.id = d.product_id
@@ -32,6 +33,7 @@ class Product {
       d.price,
       d.image,
       d.brand,
+      d.stock,
       d.modified_at
     FROM products p
     JOIN product_details d ON p.id = d.product_id
@@ -41,7 +43,7 @@ class Product {
 }
 
 
-  static async create({ name, price, image, brand }) {
+  static async create({ name, price, brand, stock, image}) {
   const [productResult] = await db.query(
     'INSERT INTO products (name) VALUES (?)',
     [name]
@@ -50,25 +52,25 @@ class Product {
   const productId = productResult.insertId;
 
   await db.query(
-    `INSERT INTO product_details (product_id, price, image, brand, modified_at)
-     VALUES (?, ?, ?, ?, NOW())`,
-    [productId, price, image, brand]
+    `INSERT INTO product_details (product_id, price, image, brand, stock, modified_at)
+     VALUES (?, ?, ?, ?, ?, NOW())`,
+    [productId, price, image, brand, stock]
   );
 
   return productId;
 }
 
 
-  static async update(id, { name, price, image, brand }) {
+  static async update(id, { name, price, brand, image, stock }) {
   await db.query(
     'UPDATE products SET name = ? WHERE id = ?',
     [name, id]
   );
 
   await db.query(
-    `UPDATE product_details SET price = ?, image = ?, brand = ?, modified_at = NOW()
+    `UPDATE product_details SET price = ?, image = ?, brand = ?, stock = ?, modified_at = NOW()
      WHERE product_id = ?`,
-    [price, image, brand, id]
+    [price, image, brand, stock, id]
   );
 
   return true;
@@ -80,24 +82,6 @@ class Product {
   await db.query('DELETE FROM products WHERE id = ?', [id]);
   return true;
 }
-
-
-  static async logAdminAction(action, product_id) {
-    await db.query(
-      'INSERT INTO admin_actions (product_id, action, action_time) VALUES (?, ?, NOW())',
-      [product_id, action]
-    );
-  }
-
-  static async getModifications() {
-    const [rows] = await db.query(`
-      SELECT p.name AS product_name, aa.action, aa.action_time
-      FROM admin_actions aa
-      JOIN products p ON aa.product_id = p.id
-      ORDER BY aa.action_time DESC
-    `);
-    return rows;
-  }
 }
 
 module.exports = Product;
