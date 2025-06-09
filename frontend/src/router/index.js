@@ -24,7 +24,7 @@ const routes = [
     component: AboutUs, 
   },
   { path: '/about', name: 'about'  },
-  { path: '/dashboard', name: 'Dashboard', component: DashboardView, meta: { requiresAuth: true } },
+  { path: '/dashboard', name: 'Dashboard', component: DashboardView}, // meta: { requiresAuth: true } 
   { path: '/manageproducts', name: 'ManageP', component: ManageProducts },
   { path: '/manageadmin', name: 'ManageA', component: CreateAdmin }
 

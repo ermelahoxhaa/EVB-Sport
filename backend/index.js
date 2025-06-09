@@ -11,6 +11,7 @@ const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const aboutUsRoutes = require('./routes/aboutUsRoutes');
 
 const app = express();
 
@@ -25,7 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-
+app.use('/api/about-us', aboutUsRoutes); 
 
 app.get('/api', (req, res) => {
   const query = 'SELECT * FROM products';
@@ -42,5 +43,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
-
-
