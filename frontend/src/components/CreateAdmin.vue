@@ -102,6 +102,7 @@
 
 <script>
 import axios from '../axios';
+import { auth } from '../utils/auth';
 
 export default {
   name: 'CreateAdmin',
@@ -119,22 +120,21 @@ export default {
     };
   },
   created() {
-  this.resetForm();
+    this.resetForm();
     this.$nextTick(() => {
+      this.fetchAdmins();
+    });
+  },
+  mounted() {
+    if (window.location.pathname === '/manageadmin') {
+      this.showBackButton = true;
+    } 
     this.fetchAdmins();
-     });
-},
- mounted() {
-  if (window.location.pathname === '/manageadmin') {
-    this.showBackButton = true;
-  } 
-
-  this.fetchAdmins();
-},
+  },
  
   methods: {
     async fetchAdmins() {
-        try {
+      try {
         const res = await axios.get('http://localhost:3000/api/users?role=1', {
           withCredentials: true 
         })
@@ -143,6 +143,7 @@ export default {
         console.error('Error fetching admins:', err)
         if (err.response?.status === 401) {
           alert('You are not authorized. Please login again.')
+          await auth.logout();
           this.$router.push('/login')
         }
       }
@@ -164,14 +165,18 @@ export default {
       await axios.put(`http://localhost:3000/api/users/${this.editingId}`, payload, {
         withCredentials: true }
       )
+      alert('Admin updated!');
     } else {
       await axios.post('http://localhost:3000/api/users/create-admin', payload, {
         withCredentials: true }
       )
+      alert('Admin created successfully!');
     }
     this.resetForm();
+    this.fetchAdmins(); 
   } catch (err) {
     console.error('Error submitting admin:', err);
+    alert(err.response?.data?.message || 'An error occurred');
   }
 }
 ,
@@ -200,9 +205,11 @@ export default {
         await axios.delete(`http://localhost:3000/api/users/${id}`, {
           withCredentials: true
         })
-        this.fetchAdmins();
+        alert('Admin deleted successfully!');
+        this.fetchAdmins(); 
       } catch (err) {
         console.error('Error deleting admin:', err);
+        alert(err.response?.data?.message || 'An error occurred while deleting admin');
       }
     }
   }

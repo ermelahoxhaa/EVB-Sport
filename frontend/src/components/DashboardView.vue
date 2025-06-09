@@ -23,7 +23,9 @@
             </router-link>
           </li>
           <li class="nav-item mt-auto">
-            <a class="nav-link text-white" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+            <a class="nav-link text-white" href="#" @click="handleLogout">
+              <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </a>
           </li>
         </ul>
       </nav>
@@ -69,9 +71,21 @@ import { ref, onMounted } from 'vue'
 import Chart from 'chart.js/auto'
 import axios from 'axios'
 import { useRouter } from 'vue-router';
+import { auth } from '../utils/auth';
+
 const router = useRouter();
 const stats = ref([])
 let chartInstance = null
+
+const handleLogout = async () => {
+  try {
+    await auth.logout();
+    router.push('/login');
+  } catch (error) {
+    console.error('Logout error:', error);
+    router.push('/login');
+  }
+};
 
 const fetchStats = async () => {
   try {
@@ -84,17 +98,12 @@ const fetchStats = async () => {
     const ordersresponse = await axios.get('http://localhost:3000/api/orders')
     const orders = ordersresponse.data
 
-    console.log('Products from API:', products)
-    console.log('Users fom API:', users)
-    console.log('Orders fom API:', orders)
-
     stats.value = [
       {
         title: 'Total Products',
         value: `${products.length} Products`,
         icon: 'fas fa-box-open'
       },
-      
       {
         title: 'Total Users',
         value: `${users.length} Users`, 
@@ -109,7 +118,11 @@ const fetchStats = async () => {
 
     updateChart(products.length, users.length, orders.length)
   } catch (error) {
-    console.error('Error fetching product stats:', error)
+    console.error('Error fetching stats:', error)
+    if (error.response?.status === 401) {
+      await auth.logout();
+      router.push('/login');
+    }
   }
 }
 
@@ -141,13 +154,8 @@ const updateChart = (productCount, userCount, orderCount) => {
 }
 
 onMounted(() => {
-  const role = parseInt(localStorage.getItem('role'));
-  if (role !== 1) {
-    router.push('/login');
-  }
-},
-fetchStats()
-);
+  fetchStats();
+});
 </script>
 
 <style scoped>

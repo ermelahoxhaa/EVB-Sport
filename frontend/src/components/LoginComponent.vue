@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import axios from '../axios';
+import { auth } from '../utils/auth';
 
 export default {
    name: 'LoginComponent',
@@ -56,29 +56,19 @@ export default {
   },
   methods: {
     async handleLogin() {
-      try{
-   const response = await axios.post(
-          'http://localhost:3000/api/auth/login',
-          {
-            email: this.email,
-            password: this.password
-          },
-          {
-            withCredentials: true 
-          }
-        )
-        document.cookie = `token=${response.data.token}; path=/; SameSite=Lax`;
-
-
-        const role = response.data.role
-
-        if (role === 'admin') {
-          this.$router.push('/dashboard')
+      this.errorMessage = '';
+      
+      try {
+        await auth.login(this.email, this.password);
+        
+        // shiko rolin e userit nese eshte admin apo user
+        if (auth.isAdmin()) {
+          this.$router.push('/dashboard');
         } else {
-          this.$router.push('/')
+          this.$router.push('/');
         }
       } catch (error) {
-        this.errorMessage = error.response?.data?.message || 'Login failed. Try again.'
+        this.errorMessage = error.message;
       }
     }
   }

@@ -22,25 +22,66 @@
         <li class="nav-item">
           <router-link to="/products" class="nav-link" active-class="active-link">Products</router-link>
         </li>
-        <li class="nav-item">
-  <router-link v-if="route.path === '/signup'" to="/signup" class="nav-link" active-class="active-link">SignUp</router-link>
-  <router-link v-else to="/login" class="nav-link" active-class="active-link">LogIn</router-link>
-</li>
+        <li class="nav-item" v-if="!isLoggedIn">
+          <router-link v-if="route.path === '/signup'" to="/signup" class="nav-link" active-class="active-link">SignUp</router-link>
+          <router-link v-else to="/login" class="nav-link" active-class="active-link">LogIn</router-link>
+        </li>
+        <li class="nav-item" v-if="isLoggedIn && isUserAdmin">
+          <router-link to="/dashboard" class="nav-link" active-class="active-link">Dashboard</router-link>
+        </li>
+        <li class="nav-item" v-if="isLoggedIn">
+          <a href="#" @click.prevent="handleLogout" class="nav-link" style="cursor: pointer;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </li>
 
       </ul>
     </div>
   </nav>
 </template>
 <script setup>
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { auth } from '../utils/auth'
 
 const route = useRoute()
+const router = useRouter()
 const isNavbarOpen = ref(false)
+
+// Simple reactive state
+const isLoggedIn = ref(false)
+const isUserAdmin = ref(false)
+
+// Update authentication state
+const updateAuthState = () => {
+  isLoggedIn.value = auth.isLoggedIn()
+  isUserAdmin.value = auth.isAdmin()
+}
 
 const toggleNavbar = () => {
   isNavbarOpen.value = !isNavbarOpen.value
 }
+
+const handleLogout = async () => {
+  try {
+    await auth.logout()
+    updateAuthState() // Update state after logout
+    router.push('/')
+  } catch (error) {
+    console.error('Logout error:', error)
+    router.push('/')
+  }
+}
+
+// Update auth state on mount and route changes
+onMounted(() => {
+  updateAuthState()
+})
+
+// Watch for route changes to update auth state
+router.afterEach(() => {
+  updateAuthState()
+})
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');

@@ -46,7 +46,10 @@
 <script setup>
 import axios from 'axios'
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { auth } from '../utils/auth'
 
+const router = useRouter()
 const showOrderForm = ref(false)
 const selectedProduct = ref(null)
 
@@ -69,7 +72,6 @@ onMounted(async () => {
     const data = await res.json()
     products.value = data
 
-    
     brands.value = [...new Set(data.map(p => p.brand))].sort()
 
   } catch (error) {
@@ -84,6 +86,7 @@ const filteredProducts = computed(() => {
     return matchesBrand && matchesQuery
   })
 })
+
 const submitOrder = async () => {
   try {
     await axios.post('http://localhost:3000/api/orders', {
@@ -100,6 +103,13 @@ const submitOrder = async () => {
 }
 
 const openOrderForm = (product) => {
+  // per me kriju order user-i duhet te jete i loguar
+  if (!auth.isLoggedIn()) {
+    alert('Please login to add items to cart')
+    router.push('/login')
+    return
+  }
+  
   selectedProduct.value = product
   showOrderForm.value = true
 }
