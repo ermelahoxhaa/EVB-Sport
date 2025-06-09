@@ -5,7 +5,7 @@
     <h2 class="mb-4">Manage Admins</h2>
     
 
-    <form @submit.prevent="submitForm" class="mb-5">
+    <form v-if="formVisible" @submit.prevent="submitForm" class="mb-5">
       <div class="mb-3">
          <div v-if="showBackButton" class="col-auto">
           <button
@@ -74,6 +74,7 @@
           <tr v-for="admin in admins" :key="admin.id">
             <td>{{ admin.name }}</td>
             <td>{{ admin.email }}</td>
+            <td>{{ admin.role === 1 ? 'Admin' : 'User' }}</td>
             <td>
               <button
                 class="btn btn-sm btn-primary me-2"
@@ -113,11 +114,15 @@ export default {
         password: ''
       },
       editingId: null,
-      showBackButton: false
+      showBackButton: false,
+      formVisible: true,
     };
   },
   created() {
-  this.resetForm(); 
+  this.resetForm();
+    this.$nextTick(() => {
+    this.fetchAdmins();
+     });
 },
  mounted() {
   if (window.location.pathname === '/manageadmin') {
@@ -165,9 +170,6 @@ export default {
       )
     }
     this.resetForm();
-    this.$nextTick(() => {
-    this.fetchAdmins();
-     });
   } catch (err) {
     console.error('Error submitting admin:', err);
   }
@@ -180,17 +182,17 @@ export default {
       this.form.password = '';
     },
     resetForm() {
-      this.editingId = null;
-      this.form = {
-        name: '',
-        email: '',
-        password: ''
-      };
-      this.$nextTick(() => {
+  this.editingId = null;
+
+  this.form.name = '';
+  this.form.email = '';
+  this.form.password = '';
+
+  this.$nextTick(() => {
     const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => input.blur()); 
+    inputs.forEach(input => input.blur());
   });
-    },
+},
     async deleteAdmin(id) {
       if (!confirm('Are you sure you want to delete this admin?')) return
       
