@@ -41,7 +41,12 @@ class AuthController {
     return res.json({
       message: 'Login successful',
       token,
-      role: user.role
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        name: user.name
+      }
     });
 
   } catch (err) {
@@ -72,6 +77,21 @@ class AuthController {
     } catch (err) {
       console.error('Error during registration:', err.message);
       res.status(500).json({ message: 'Error while processing registration.' });
+    }
+  }
+
+  static async logout(req, res) {
+    try {
+      res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax'
+      });
+      
+      return res.json({ message: 'Logout successful' });
+    } catch (err) {
+      console.error('Error during logout:', err.message);
+      res.status(500).json({ message: 'Error while processing logout.' });
     }
   }
 }
