@@ -82,7 +82,17 @@
         />
       </div>
       <div class="mb-3">
-        <input ref="fileInput" type="file" class="form-control" @change="onFileChange" />
+    <input
+      v-model.number="form.stock"
+      type="number"
+      min="0"
+      class="form-control"
+      placeholder="Stock"
+      required
+    />
+  </div>
+      <div class="mb-3">
+        <input ref="fileInput" type="file" name="image" class="form-control" @change="onFileChange" />
       </div>
       <button
         type="submit"
@@ -177,7 +187,7 @@ export default {
       const response = await axios.get("http://localhost:3000/api/products");
       this.products = response.data.map(p => ({
         ...p,
-        image: p.image ? `/image/${p.image}` : null
+        image: p.image ? `http://localhost:3000/uploads/${p.image}` : null
       }));
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -221,16 +231,6 @@ export default {
       } else if (this.editingId && this.existingImage) {
         formData.append("existingImage", this.existingImage);
       }
-
-      if (this.editingId) {
-      if (this.form.image) {
-        formData.append("image", this.form.image);
-      } else if (this.existingImage) {
-        formData.append("existingImage", this.existingImage);
-      }
-    } else if (this.form.image) {
-      formData.append("image", this.form.image);
-    }
         const url = this.editingId ? `http://localhost:3000/api/products/${this.editingId}` : "http://localhost:3000/api/products";
         const method = this.editingId ? axios.put : axios.post;
         await method(url, formData, { headers: { "Content-Type": "multipart/form-data" } });

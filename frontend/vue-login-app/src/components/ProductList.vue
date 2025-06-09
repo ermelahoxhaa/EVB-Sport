@@ -18,7 +18,7 @@
     <section id="products" class="mt-4">
       <div class="product-list">
         <div v-for="product in filteredProducts" :key="product.id" class="product-item">
-          <img :src="product.image" :alt="product.name" />
+          <img :src="product.image ? `http://localhost:3000/uploads/${product.image}` : ''" :alt="product.name" />
           <h3>{{ product.name }}</h3>
           <p class="price">{{ product.price }}€</p>
           <button class="btn" @click="openOrderForm(product)">Add to cart</button>

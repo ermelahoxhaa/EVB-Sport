@@ -53,7 +53,7 @@ class Product {
 
   await db.query(
     `INSERT INTO product_details (product_id, price, image, brand, stock, modified_at)
-     VALUES (?, ?, ?, ?, NOW())`,
+     VALUES (?, ?, ?, ?, ?, NOW())`,
     [productId, price, image, brand, stock]
   );
 
