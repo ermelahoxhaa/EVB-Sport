@@ -89,14 +89,29 @@ const handleLogout = async () => {
 
 const fetchStats = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/products')
-    const products = response.data
+    const response = await axios.get('http://localhost:3000/api/products', {
+      withCredentials: true,
+      headers: {
+        'Authorization': `Bearer ${auth.getToken()}`
+      }
+    });
+    const products = response.data;
 
-    const usersResponse = await axios.get('http://localhost:3000/api/users', { withCredentials: true })
-    const users = usersResponse.data
+    const usersResponse = await axios.get('http://localhost:3000/api/users', { 
+      withCredentials: true,
+      headers: {
+        'Authorization': `Bearer ${auth.getToken()}`
+      }
+    });
+    const users = usersResponse.data;
 
-    const ordersresponse = await axios.get('http://localhost:3000/api/orders')
-    const orders = ordersresponse.data
+    const ordersresponse = await axios.get('http://localhost:3000/api/orders', {
+      withCredentials: true,
+      headers: {
+        'Authorization': `Bearer ${auth.getToken()}`
+      }
+    });
+    const orders = ordersresponse.data;
 
     stats.value = [
       {
@@ -114,17 +129,17 @@ const fetchStats = async () => {
         value: `${orders.length} Orders`,
         icon: 'fas fa-shopping-bag'
       }
-    ]
+    ];
 
-    updateChart(products.length, users.length, orders.length)
+    updateChart(products.length, users.length, orders.length);
   } catch (error) {
-    console.error('Error fetching stats:', error)
-    if (error.response?.status === 401) {
+    console.error('Error fetching stats:', error);
+    if (error.response?.status === 403) {
       await auth.logout();
       router.push('/login');
     }
   }
-}
+};
 
 const updateChart = (productCount, userCount, orderCount) => {
   const ctx = document.getElementById('activityChart').getContext('2d')

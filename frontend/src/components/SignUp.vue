@@ -95,14 +95,12 @@ const signup = async () => {
   const fullName = `${firstName.value} ${lastName.value}`;
 
   try {
-    await axios.post('/auth/signup', {
-
-  name: fullName,
-  email: email.value,
-  password: password.value,
-  role: 'user',
-});
-
+    await axios.post('/api/auth/signup', {
+      name: fullName,
+      email: email.value,
+      password: password.value,
+      role: 0
+    });
 
     alert('Registration was successful!');
     window.location.href = '/login';

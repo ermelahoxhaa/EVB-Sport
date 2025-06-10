@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const AuthMiddleware = require('../middleware/authMiddleware');
 const {
   getAllProducts,
   createProduct,
@@ -22,7 +23,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-router.get('/', getAllProducts);
+router.get('/', (req, res, next) => {
+  const referer = req.headers.referer || '';
+  const isDirectBrowserAccess = !referer.includes('localhost:8080');
+  
+  if (isDirectBrowserAccess) {
+    AuthMiddleware.authenticateToken(req, res, () => {
+      AuthMiddleware.authorizeRole(1)(req, res, next);
+    });
+  } else {
+    next();
+  }
+}, getAllProducts);
+
 router.post('/', upload.single('image'), createProduct);
 router.put('/:id', upload.single('image'), updateProduct);
 router.delete('/:id', deleteProduct);

@@ -69,17 +69,23 @@ const orderForm = ref({
 onMounted(async () => {
   try {
     const res = await fetch('http://localhost:3000/api/products')
+    if (!res.ok) {
+      throw new Error('Failed to fetch products')
+    }
     const data = await res.json()
-    products.value = data
-
-    brands.value = [...new Set(data.map(p => p.brand))].sort()
-
+    products.value = Array.isArray(data) ? data : []
+    brands.value = [...new Set(products.value.map(p => p.brand))].filter(Boolean).sort()
   } catch (error) {
     console.error('Gabim gjatë marrjes së produkteve:', error)
+    products.value = []
+    brands.value = []
   }
 })
 
 const filteredProducts = computed(() => {
+  if (!Array.isArray(products.value)) {
+    return []
+  }
   return products.value.filter(p => {
     const matchesBrand = !selectedBrand.value || p.brand === selectedBrand.value
     const matchesQuery = !searchQuery.value || p.name.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -103,7 +109,7 @@ const submitOrder = async () => {
 }
 
 const openOrderForm = (product) => {
-  // per me kriju order user-i duhet te jete i loguar
+  // per me kriju order user-i duhet me kon log in
   if (!auth.isLoggedIn()) {
     alert('Please login to add items to cart')
     router.push('/login')
