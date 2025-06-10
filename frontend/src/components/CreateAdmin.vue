@@ -2,7 +2,7 @@
   
   <div class="container py-4">
     
-    <h2 class="mb-4">Manage Admins</h2>
+    <h2 class="mb-4">Manage Users</h2>
     
 
     <form v-if="formVisible" @submit.prevent="submitForm" class="mb-5">
@@ -67,6 +67,7 @@
           <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Role</th>
             <th style="width: 150px">Actions</th>
           </tr>
         </thead>
@@ -77,6 +78,7 @@
             <td>{{ admin.role === 1 ? 'Admin' : 'User' }}</td>
             <td>
               <button
+                v-if="admin.role === 1"
                 class="btn btn-sm btn-primary me-2"
                 @click="editAdmin(admin)"
                 style="background-color: rgb(128, 97, 114)"
@@ -95,7 +97,7 @@
       </table>
     </div>
     <div v-else>
-      <p>No admins found.</p>
+      <p>No users found.</p>
     </div>
   </div>
 </template>
@@ -135,7 +137,7 @@ export default {
   methods: {
     async fetchAdmins() {
       try {
-        const res = await axios.get('http://localhost:3000/api/users?role=1', {
+        const res = await axios.get('http://localhost:3000/api/users', {
           withCredentials: true 
         })
         this.admins = res.data

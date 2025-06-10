@@ -11,7 +11,6 @@ router.get(
   AuthMiddleware.authorizeRole(1),
   async (req, res) => {
     try {
-      // Check if filtering by role
       if (req.query.role !== undefined) {
         return UserController.getUsersByRole(req, res);
       }
@@ -55,14 +54,12 @@ router.get('/check', AuthMiddleware.authenticateToken, (req, res) => {
   res.json({ userId: id, role: role === 1 ? 'admin' : 'user' });
 });
 
-// modifikimi i userit (vetem admin mund te modifikoj userat)
 router.put('/:id', 
   AuthMiddleware.authenticateToken, 
   AuthMiddleware.authorizeRole(1),
   UserController.updateUser
 );
 
-// delete user (vetem admin mund te fshij userat)
 router.delete('/:id', 
   AuthMiddleware.authenticateToken, 
   AuthMiddleware.authorizeRole(1),

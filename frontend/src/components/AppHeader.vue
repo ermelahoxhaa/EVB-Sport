@@ -26,30 +26,31 @@
           <router-link v-if="route.path === '/signup'" to="/signup" class="nav-link" active-class="active-link">SignUp</router-link>
           <router-link v-else to="/login" class="nav-link" active-class="active-link">LogIn</router-link>
         </li>
+        <li class="nav-item" v-if="isLoggedIn && isUserAdmin">
+          <router-link to="/dashboard" class="nav-link" active-class="active-link">Dashboard</router-link>
+        </li>
         <li class="nav-item" v-if="isLoggedIn">
           <a href="#" @click.prevent="handleLogout" class="nav-link" style="cursor: pointer;">
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
         </li>
-
       </ul>
     </div>
   </nav>
 </template>
+
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { auth } from '../utils/auth'
 
 const route = useRoute()
 const router = useRouter()
 const isNavbarOpen = ref(false)
-
-// Simple reactive state
 const isLoggedIn = ref(false)
 const isUserAdmin = ref(false)
 
-// Update authentication state
+
 const updateAuthState = () => {
   isLoggedIn.value = auth.isLoggedIn()
   isUserAdmin.value = auth.isAdmin()
@@ -62,7 +63,7 @@ const toggleNavbar = () => {
 const handleLogout = async () => {
   try {
     await auth.logout()
-    updateAuthState() // Update state after logout
+    updateAuthState()
     router.push('/')
   } catch (error) {
     console.error('Logout error:', error)
@@ -70,16 +71,27 @@ const handleLogout = async () => {
   }
 }
 
-// Update auth state on mount and route changes
 onMounted(() => {
   updateAuthState()
+  if (isLoggedIn.value && (route.path === '/login' || route.path === '/signup')) {
+    router.push('/')
+  }
+  if (isLoggedIn.value && !isUserAdmin.value && route.path === '/dashboard') {
+    router.push('/')
+  }
 })
 
-// Watch for route changes to update auth state
-router.afterEach(() => {
+watch(() => route.path, (newPath) => {
   updateAuthState()
+  if (isLoggedIn.value && (newPath === '/login' || newPath === '/signup')) {
+    router.push('/')
+  }
+  if (isLoggedIn.value && !isUserAdmin.value && newPath === '/dashboard') {
+    router.push('/')
+  }
 })
 </script>
+
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600&display=swap');
@@ -134,8 +146,6 @@ body {
   margin-right: 50px;
 }
 
-
-
 .active-link {
   border-bottom: 2px solid rgb(158, 105, 168);
   transform: translateY(-5px);
@@ -155,7 +165,6 @@ body {
 .navbar-collapse.active {
   display: block;
 }
-
 
 @media (max-width: 820px) {
   .navbar-collapse {

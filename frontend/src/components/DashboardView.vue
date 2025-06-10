@@ -67,14 +67,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Chart from 'chart.js/auto'
 import axios from 'axios'
 import { useRouter } from 'vue-router';
 import { auth } from '../utils/auth';
 
 const router = useRouter();
-const stats = ref([])
+const stats = ref({
+  totalProducts: 0,
+  totalUsers: 0,
+  totalOrders: 0
+})
 let chartInstance = null
 
 const handleLogout = async () => {
@@ -89,49 +93,35 @@ const handleLogout = async () => {
 
 const fetchStats = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/products', {
-      withCredentials: true,
-      headers: {
-        'Authorization': `Bearer ${auth.getToken()}`
-      }
-    });
-    const products = response.data;
+    const token = auth.getToken()
+    const [productsRes, usersRes, ordersRes] = await Promise.all([
+      axios.get('http://localhost:3000/api/products', {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }),
+      axios.get('http://localhost:3000/api/users', {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }),
+      axios.get('http://localhost:3000/api/orders', {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    ])
 
-    const usersResponse = await axios.get('http://localhost:3000/api/users', { 
-      withCredentials: true,
-      headers: {
-        'Authorization': `Bearer ${auth.getToken()}`
-      }
-    });
-    const users = usersResponse.data;
+    stats.value = {
+      totalProducts: productsRes.data.length,
+      totalUsers: usersRes.data.length,
+      totalOrders: ordersRes.data.length
+    }
 
-    const ordersresponse = await axios.get('http://localhost:3000/api/orders', {
-      withCredentials: true,
-      headers: {
-        'Authorization': `Bearer ${auth.getToken()}`
-      }
-    });
-    const orders = ordersresponse.data;
-
-    stats.value = [
-      {
-        title: 'Total Products',
-        value: `${products.length} Products`,
-        icon: 'fas fa-box-open'
-      },
-      {
-        title: 'Total Users',
-        value: `${users.length} Users`, 
-        icon: 'fas fa-users'
-      },
-      {
-        title: 'Total Orders',
-        value: `${orders.length} Orders`,
-        icon: 'fas fa-shopping-bag'
-      }
-    ];
-
-    updateChart(products.length, users.length, orders.length);
+    updateChart(productsRes.data.length, usersRes.data.length, ordersRes.data.length);
   } catch (error) {
     console.error('Error fetching stats:', error);
     if (error.response?.status === 403) {
@@ -169,8 +159,24 @@ const updateChart = (productCount, userCount, orderCount) => {
 }
 
 onMounted(() => {
-  fetchStats();
-});
+  if (!auth.isAdmin()) {
+    router.push('/')
+    return
+  }
+  fetchStats()
+
+  window.addEventListener('popstate', () => {
+    if (auth.isAdmin()) {
+      router.push('/dashboard')
+    }
+  })
+})
+
+watch(() => router.currentRoute.value.path, (newPath) => {
+  if (auth.isAdmin() && newPath !== '/dashboard') {
+    router.push('/dashboard')
+  }
+})
 </script>
 
 <style scoped>
