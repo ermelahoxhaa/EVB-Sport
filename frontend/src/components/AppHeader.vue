@@ -26,9 +26,6 @@
           <router-link v-if="route.path === '/signup'" to="/signup" class="nav-link" active-class="active-link">SignUp</router-link>
           <router-link v-else to="/login" class="nav-link" active-class="active-link">LogIn</router-link>
         </li>
-        <li class="nav-item" v-if="isLoggedIn && isUserAdmin">
-          <router-link to="/dashboard" class="nav-link" active-class="active-link">Dashboard</router-link>
-        </li>
         <li class="nav-item" v-if="isLoggedIn">
           <a href="#" @click.prevent="handleLogout" class="nav-link" style="cursor: pointer;">
             <i class="fas fa-sign-out-alt"></i> Logout

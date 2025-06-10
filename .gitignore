@@ -1,25 +1,32 @@
-# Node dependencies
+# Node modules and lock files
 node_modules/
-
-# Dist/Build folders
-dist/
-build/
+package-lock.json
 
 # Logs
-*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Temporary/cache
-*.tmp
-.cache/
-.vite/
+# Cache directories
+.npm/
+.pnpm-store/
 
-# IDE/editor
-.vscode/
+# Editor configs, build dirs, system files (si ke tashmë)
 .idea/
-*.sublime-*
-
-# HTML files që s’duhen
-html/
-
-# Env files
-.env
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+coverage/
+*.lcov
+*.tmp
+*.lock
+.cache/
+Thumbs.db
+Desktop.ini
+*.log
+*.bak
+*.old

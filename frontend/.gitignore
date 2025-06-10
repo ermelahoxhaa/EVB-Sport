@@ -1,50 +1,32 @@
-.DS_Store
-node_modules
+# Node modules and lock files
+node_modules/
+package-lock.json
 
-# Build output directories
-/dist
-/build
-
-# Local environment files
-.env.local
-.env.*.local
-.env.development
-.env.production
-.env.test
-
-# Log files
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Editor directories and files
-.idea
-.vscode
+# Cache directories
+.npm/
+.pnpm-store/
+
+# Editor configs, build dirs, system files (si ke tashmë)
+.idea/
+.vscode/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-# Coverage reports
 coverage/
 *.lcov
-
-# Temporary files
 *.tmp
 *.lock
-
-# Cache directories
 .cache/
-.npm/
-.pnpm-store/
-
-# System files
 Thumbs.db
 Desktop.ini
-
-# Other files
 *.log
 *.bak
 *.old
