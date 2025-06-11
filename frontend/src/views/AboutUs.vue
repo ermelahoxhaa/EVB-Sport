@@ -49,7 +49,7 @@ onMounted(() => {
 
 <style scoped>
 .hero-banner {
-  height: 60vh;
+  height: 80vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

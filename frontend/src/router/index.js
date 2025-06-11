@@ -41,15 +41,12 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  // shiko nese endpointi i kërkuar kërkon autentifikim
-  // dhe nëse përdoruesi është i kyçur
   if (to.meta.requiresAuth) {
     if (!auth.isLoggedIn()) {
       next('/login');
       return;
     }
     
-    // shiko nese endpointi i kërkuar kërkon rol admin
     if (to.meta.requiresAdmin && !auth.isAdmin()) {
       next('/');
       return;
